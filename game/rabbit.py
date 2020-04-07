@@ -7,6 +7,7 @@ import pymunk
 from pymunk import Vec2d
 from pymunk import Body
 
+
 class Rabbit(pyglet.sprite.Sprite):
     def __init__(self, *args, **kwargs):
         self.space = kwargs['space']
@@ -24,7 +25,10 @@ class Rabbit(pyglet.sprite.Sprite):
             image.anchor_x = 64
             rabbit_imgs_right.append(image)
             rabbit_imgs_left.append(image.get_transform(flip_x=True))
-
+        self.jump_right = rabbit_imgs_right[1]
+        self.fall_right = rabbit_imgs_right[0]
+        self.jump_left = rabbit_imgs_left[1]
+        self.fall_left = rabbit_imgs_left[0]
         self.rabbit_run_right = pyglet.image.Animation.from_image_sequence(rabbit_imgs_right[8:12], 0.08)
         self.rabbit_run_left = pyglet.image.Animation.from_image_sequence(rabbit_imgs_left[8:12], 0.08)
         self.rabbit_still_right = rabbit_imgs_right[7]
@@ -38,31 +42,45 @@ class Rabbit(pyglet.sprite.Sprite):
         self.shape = pymunk.Poly(self.body, vs)
         self.shape.friction = 0.5
         self.body.position = kwargs['x'], kwargs['y']
-        self.body.angle = 0.5*math.pi
+        self.body.angle = 0.5 * math.pi
         self.space.add(self.body, self.shape)
-        self.body.center_of_gravity=10,0
-        
+        self.body.center_of_gravity = 10, 0
+
     def update(self, dt):
         self.x = self.body.position.x
         self.y = self.body.position.y
-        if self.key_handler[key.LEFT]: #and self.body.velocity.y == 0:
+        # print(self.body.velocity.y)
+        # print(self.body.velocity.x)
+
+        if self.key_handler[key.UP] and self.body.velocity.y == 0:
+            self.body.apply_impulse_at_local_point([7850, 0], (0, 0))
+
+        if self.body.velocity.x < 0 or self.image == self.rabbit_still_left or self.image == self.jump_left:
+            if self.body.velocity.y < -8.0:
+                self.image = self.fall_left
+            if self.body.velocity.y > 10.0:
+                self.image = self.jump_left
+
+        if self.body.velocity.x > 2.5 or self.image == self.rabbit_still_right or self.image == self.jump_right:
+            if self.body.velocity.y > 10.0:
+                self.image = self.jump_right
+            if self.body.velocity.y < -8.0:
+                self.image = self.fall_right
+
+        # left movement
+        if self.key_handler[key.LEFT] and self.body.velocity.y == 0:
             if self.body.velocity.x >= 0:
                 self.image = self.rabbit_run_left
-                self.body.velocity.x = 0
-            self.body.apply_impulse_at_local_point([0, 150], (0,0))
-        if self.key_handler[key.RIGHT]: #and self.body.velocity.y == 0:
+            self.body.apply_impulse_at_local_point([0, 175], (0, 0))
+        # right x movement
+        if self.key_handler[key.RIGHT] and self.body.velocity.y == 0:
             if self.body.velocity.x <= 0:
                 self.image = self.rabbit_run_right
-                self.body.velocity.x = 0
-            self.body.apply_impulse_at_local_point([0, -150], (0,0))
-
-        if self.key_handler[key.UP]: #and self.body.velocity.y == 0:
-            self.body.apply_impulse_at_local_point([550, 0], (0,0))
-            
-            
-        if not self.key_handler[key.RIGHT] and not self.key_handler[key.LEFT]:
-            if self.body.velocity.x > 0:
+            self.body.apply_impulse_at_local_point([0, -175], (0, 0))
+        # standing
+        if not self.key_handler[key.RIGHT] and not self.key_handler[key.LEFT] \
+                and not self.key_handler[key.UP] and self.body.velocity.y == 0.0:
+            if self.image == self.rabbit_run_right or self.image == self.fall_right:
                 self.image = self.rabbit_still_right
-            elif self.body.velocity.x < 0:
+            elif self.image == self.rabbit_run_left or self.image == self.fall_left:
                 self.image = self.rabbit_still_left
-            self.body.velocity.x = 0

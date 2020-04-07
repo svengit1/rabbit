@@ -24,6 +24,6 @@ class Platform(game.map_entity.MapEntity):
         self.content += [self.get_sprite(map_images[i[0]], i[1], y)
                          for i in [(223, x + (kwargs['size']-2)*32), (224, x + (kwargs['size']-2)*32 + 32)]]
         static_line = pymunk.Segment(self.space.static_body, (x+32 , y+32), (x + 32 + (kwargs['size']-2)*32, y+32), 0.0)
-        static_line.friction = 0.5
+        static_line.friction = 1
         self.space.add(static_line)
 
