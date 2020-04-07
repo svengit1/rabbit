@@ -1,4 +1,5 @@
 import pyglet as pyglet
+from pyglet.window import FPSDisplay
 from game.platform import Platform
 from game.small_tree import SmallTree
 from game.large_tree import LargeTree
@@ -13,10 +14,10 @@ from pymunk import Vec2d
 window_width = 960
 window_height = 832
 
+
 window = pyglet.window.Window(window_width, window_height)
 world_batch = pyglet.graphics.Batch()
 background = pyglet.graphics.OrderedGroup(0)
-
 
 
 score_label = pyglet.text.Label(text="Score: 0", x=0, y=820, batch=world_batch)
@@ -31,11 +32,13 @@ space.gravity = Vec2d(0.0, -900.0)
 #g1.create(hpos=6, vpos=2, size=5)
 
 p2 = Platform(window=window, batch=world_batch, group=background, space=space)
-p2.create(hpos=0, vpos=15, size=5)
+p2.create(hpos=0, vpos=15, size=10)
+
 p3 = Platform(window=window, batch=world_batch, group=background, space=space)
 p3.create(hpos=16, vpos=15, size=8)
+
 b1 = Bridge(window=window, batch=world_batch, group=background, space=space)
-b1.create(hpos=3, vpos=16, size=15)
+b1.create(hpos=8, vpos=16, size=10)
 
 p4 = Platform(window=window, batch=world_batch, group=background, space=space)
 p4.create(hpos=25, vpos=17, size=6)
@@ -43,7 +46,7 @@ p4.create(hpos=25, vpos=17, size=6)
 t1 = LargeTree(window=window, batch=world_batch, group=background)
 t1.create(hpos=27, vpos=18)
 
-rabbit = Rabbit(x=100, y=800, batch=world_batch, group=background, space=space)
+rabbit = Rabbit(x=100, y=600, batch=world_batch, group=background, space=space)
 
 
 # t1 = SmallTree(window=window, batch=world_batch, group=background)
@@ -70,9 +73,13 @@ rabbit = Rabbit(x=100, y=800, batch=world_batch, group=background, space=space)
 
 window.push_handlers(rabbit.key_handler)
 
+fps_display = FPSDisplay(window)
+
+
 
 def init():
     global score
+
 
     score = 0
     score_label.text = "Score: " + str(score)
@@ -88,6 +95,7 @@ def on_draw():
     ps = [c for p in ps for c in p]
     pyglet.graphics.draw(n, pyglet.gl.GL_LINE_LOOP,
              ('v2f', ps), ('c3f', (1, 0, 0)*n))
+    fps_display.draw()
 
 
 
