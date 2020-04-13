@@ -18,5 +18,4 @@ class MapEntity:
         return vpos * 32
 
     def get_x(self, hpos):
-        assert 0 <= hpos <= self.window_width // 32, "Invalid hpos range"
         return hpos * 32
