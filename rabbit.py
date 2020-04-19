@@ -11,6 +11,7 @@ from game.rabbit import Rabbit
 import pymunk
 from pymunk import Vec2d
 from pyglet.gl import glTranslatef
+import pyglet.gl as gl
 
 from pyglet.window import key
 
@@ -22,7 +23,10 @@ window = pyglet.window.Window(window_width, window_height)
 world_batch = pyglet.graphics.Batch()
 background = pyglet.graphics.OrderedGroup(0)
 
-score_label = pyglet.text.Label(text="Score: 0", x=0, y=820, batch=world_batch)
+score_label = pyglet.text.Label(text="Score: 0",
+                                x=10, y=800,
+                                font_size=24, bold=True,
+                                color=(200, 200, 200, 200))
 
 
 # Physics stuff
@@ -56,7 +60,7 @@ p5.create(hpos=32, vpos=15, size=10)
 
 
 
-rabbit = Rabbit(x=100, y=600, batch=world_batch, group=background, space=space)
+rabbit = Rabbit(x=100, y=600, window=window, batch=world_batch, group=background, space=space)
 
 
 # t1 = SmallTree(window=window, batch=world_batch, group=background)
@@ -99,6 +103,22 @@ def movement(keys):
     if keys[key.L]:
         glTranslatef(10,0,0)
 
+
+def sticky_draw(obj, win):
+    gl.glMatrixMode(gl.GL_MODELVIEW)
+    gl.glPushMatrix()
+    gl.glLoadIdentity()
+    gl.glMatrixMode(gl.GL_PROJECTION)
+    gl.glPushMatrix()
+    gl.glLoadIdentity()
+    gl.glOrtho(0, win.width, 0, win.height, -1, 1)
+    obj.draw()
+    gl.glPopMatrix()
+    gl.glMatrixMode(gl.GL_MODELVIEW)
+    gl.glPopMatrix()
+
+
+        
 def init():
     global score
 
@@ -123,6 +143,8 @@ def on_draw():
         pyglet.graphics.draw(2, pyglet.gl.GL_LINES, ('v2f', (seg.a.x, seg.a.y, seg.b.x, seg.b.y)))
 
     fps_display.draw()
+
+    sticky_draw(score_label, window)
 
 
 
