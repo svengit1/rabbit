@@ -5,6 +5,7 @@ import math
 from game.resources import rabbit_images
 import pymunk
 from pyglet.gl import glTranslatef
+import pyglet.gl as gl
 from pymunk import Vec2d
 from pymunk import Body
 from transitions import Machine, MachineError
@@ -64,7 +65,6 @@ class Rabbit(pyglet.sprite.Sprite):
         self.key_handler = key.KeyStateHandler()
         self.running_velocity = 350
         self.velocity_comp = math.sqrt(self.running_velocity ** 2 / 2)
-
         self.machine = Machine(self, states=Rabbit.states, initial='fr')
         self.fsm()
         rabbit_imgs_left, rabbit_imgs_right = Rabbit.make_sprite_image()
@@ -125,9 +125,16 @@ class Rabbit(pyglet.sprite.Sprite):
         else:
             self.standing_on_ground = False
 
+        if self.y < 10:
+            self.body.position = (100, 800)
+            self.body.velocity = (0, 0)
+            if self.x > 430:
+                glTranslatef(self.x - 430, 0, 0)
+            
         self.x = self.body.position.x
         self.y = self.body.position.y
-
+            
+            
         try:
             if math.isclose(self.body.velocity.x, 0, abs_tol=0.01) \
                     and math.isclose(self.body.velocity.y, 0, abs_tol=0.01):
@@ -145,6 +152,7 @@ class Rabbit(pyglet.sprite.Sprite):
             #print(msg)
             pass
 
+        # jump
         if self.key_handler[key.UP] and self.standing_on_ground:
             self.body.apply_impulse_at_local_point([15550, 0], (0, 0))
             self.standing_on_ground = False
