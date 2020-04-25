@@ -6,7 +6,8 @@ def center_image(image):
     image.anchor_x = image.width / 2
     image.anchor_y = image.height / 2
 
-
+segment_width = 32
+segment_height = 32
 # Tell pyglet where to find the resources
 pyglet.resource.path = ['./resources', './resources/map_art', './resources/player']
 pyglet.resource.reindex()

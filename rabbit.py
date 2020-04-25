@@ -41,8 +41,8 @@ b1.create(hpos=8, vpos=16, size=10)
 p6 = Platform(space=space, hpos=25, vpos=17, width=6)
 p10a = Platform(space=space, hpos=32, vpos=15, width=10)
 
-t1 = LargeTree(window=window, batch=world_batch, group=background)
-t1.create(hpos=27, vpos=18)
+large_tree = LargeTree()
+
 
 rabbit = Rabbit(x=100, y=600, batch=world_batch, group=background, space=space)
 
@@ -53,8 +53,8 @@ rabbit = Rabbit(x=100, y=600, batch=world_batch, group=background, space=space)
 # t2 = LargeTree(window=window, batch=world_batch, group=background)
 # t2.create(hpos=15, vpos=10)
 #
-# b1 = Bush(window=window, batch=world_batch, group=background)
-# b1.create(hpos=11, vpos=12)
+bush = Bush()
+
 #
 # c1 = Cloud(window=window, batch=world_batch, group=background)
 # c1.create(hpos=20, vpos=15)
@@ -114,11 +114,13 @@ def init():
 @window.event
 def on_draw():
     window.clear()
-    world_batch.draw()
     p10.draw()
     p8.draw()
     p6.draw()
     p10a.draw()
+    large_tree.draw(hpos=27, vpos=18)
+    bush.draw(hpos=4, vpos=16)
+    world_batch.draw()
     
 
     ps = rabbit.shape.get_vertices()
