@@ -34,33 +34,17 @@ space = pymunk.Space()
 space.gravity = Vec2d(0.0, -900.0)
 
 
-#g1 = Platform(window=window, batch=world_batch, group=background)
-#g1.create(hpos=6, vpos=2, size=5)
-
-p2 = Platform(window=window, batch=world_batch, group=background, space=space)
-p2.create(hpos=0, vpos=15, size=10)
-
-p3 = Platform(window=window, batch=world_batch, group=background, space=space)
-p3.create(hpos=16, vpos=15, size=8)
-
-
-
+p10 = Platform(space=space, hpos=0, vpos=15, width=10)
+p8 = Platform(space=space, hpos=16, vpos=15, width=8)
 b1 = Bridge(window=window, batch=world_batch, group=background, space=space)
 b1.create(hpos=8, vpos=16, size=10)
-
-p4 = Platform(window=window, batch=world_batch, group=background, space=space)
-p4.create(hpos=25, vpos=17, size=6)
-
+p6 = Platform(space=space, hpos=25, vpos=17, width=6)
+p10a = Platform(space=space, hpos=32, vpos=15, width=10)
 
 t1 = LargeTree(window=window, batch=world_batch, group=background)
 t1.create(hpos=27, vpos=18)
 
-p5 = Platform(window=window, batch=world_batch, group=background, space=space)
-p5.create(hpos=32, vpos=15, size=10)
-
-
-
-rabbit = Rabbit(x=100, y=600, window=window, batch=world_batch, group=background, space=space)
+rabbit = Rabbit(x=100, y=600, batch=world_batch, group=background, space=space)
 
 
 # t1 = SmallTree(window=window, batch=world_batch, group=background)
@@ -131,6 +115,11 @@ def init():
 def on_draw():
     window.clear()
     world_batch.draw()
+    p10.draw()
+    p8.draw()
+    p6.draw()
+    p10a.draw()
+    
 
     ps = rabbit.shape.get_vertices()
     ps = [p.rotated(rabbit.body.angle) + rabbit.body.position for p in ps]

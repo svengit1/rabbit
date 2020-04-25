@@ -1,29 +1,42 @@
 import pyglet
-import game.map_entity
 import game.resources
 from game.resources import map_images
 import pymunk
+import pyglet.gl as gl
 
-
-class Platform(game.map_entity.MapEntity):
+class Platform:
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.middle = map_images[225]
         self.space = kwargs['space']
-
-    def create(self, **kwargs):
-        assert kwargs['size'] >= 4, "Size has to be greater or equal two"
-        y = self.get_y(kwargs['vpos'])
-        x = self.get_x(kwargs['hpos'])
-        self.content = [self.get_sprite(map_images[i[0]], i[1], y)
-                        for i in [(217, x), (218, x + 32)]]
-
-        self.content += [self.get_sprite(self.middle, x + 32*2 + i*32, y)
-                         for i in range(0, kwargs['size'] - 4)]
-
-        self.content += [self.get_sprite(map_images[i[0]], i[1], y)
-                         for i in [(223, x + (kwargs['size']-2)*32), (224, x + (kwargs['size']-2)*32 + 32)]]
-        static_line = pymunk.Segment(self.space.static_body, (x+32 , y+32), (x + 32 + (kwargs['size']-2)*32, y+32), 0.0)
+        self.width = kwargs['width']
+        self.segment_width = 32
+        self.segment_height = 32
+        self.y = kwargs['vpos'] * self.segment_height
+        self.x = kwargs['hpos'] * self.segment_width
+        self.image = self.create_image(self.width)
+        static_line = pymunk.Segment(self.space.static_body, (self.x+self.segment_width , self.y+self.segment_height),
+                                     (self.x + self.segment_width + (self.width-2) * self.segment_width,
+                                      self.y + self.segment_height), 0.0)
         static_line.friction = 1.0
         self.space.add(static_line)
+
+    def add_image(self, image, id, offset):
+        image.blit_into(map_images[id].get_image_data(), offset, 0, 0)
+        new_offset = offset + self.segment_width
+        return image, new_offset
+        
+    def create_image(self, width):
+        assert width >= 4, "Width has to be greater or equal than four"
+        image = pyglet.image.Texture.create(width*32, 32)
+        offset = 0
+        image, offset = self.add_image(image, 217, offset)
+        image, offset = self.add_image(image, 218, offset)
+        for j in range(width-4):
+            image, offset = self.add_image(image, 225, offset)
+        image, offset = self.add_image(image, 223, offset)
+        image, offset = self.add_image(image, 224, offset)
+        return image
+
+    def draw(self):
+        gl.glEnable(gl.GL_BLEND)
+        self.image.blit(self.x, self.y)
 
