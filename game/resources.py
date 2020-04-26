@@ -8,6 +8,15 @@ def center_image(image):
 
 segment_width = 32
 segment_height = 32
+
+window_width = 960
+window_height = 832
+
+state = dict()
+state['screen_pan_x'] = 0
+state['score'] = 0
+
+
 # Tell pyglet where to find the resources
 pyglet.resource.path = ['./resources', './resources/map_art', './resources/player']
 pyglet.resource.reindex()

@@ -1,59 +1,56 @@
 import game.map_entity
 import game.resources
-from game.resources import map_images
+from game.resources import map_images, segment_height, segment_width
 import pyglet
 import pymunk
+from game.map_entity import MapEntity
 
 
-class Bridge(game.map_entity.MapEntity):
+class Bridge(MapEntity):
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.middle = []
-        self.left = []
-        self.right = []
         self.space = kwargs['space']
+        self.y = kwargs['vpos']*segment_height
+        self.x = kwargs['hpos']*segment_width
+        bridge_width = kwargs['width']
+        self.image = Bridge.create_image(bridge_width)
+        slope_left = pymunk.Segment(self.space.static_body, (self.x + 32, self.y),
+                                    (self.x + 96, self.y-48), 0.0)
+        flat = pymunk.Segment(self.space.static_body, (self.x + 96, self.y-48),
+                              (self.x + 96 + (bridge_width-6)*32, self.y-48), 0.0)
+        slope_right = pymunk.Segment(self.space.static_body, (self.x + 96 + (bridge_width-6)*32, self.y-48),
+                                     (self.x + 96 + (bridge_width-4)*32, self.y), 0.0)
+        slope_left.friction, flat.friction, slope_right.friction = 1, 1, 1
         self.lines = []
+        self.lines = [slope_left, flat, slope_right]
+        self.space.add(self.lines)
 
-    def create(self, **kwargs):
-        assert kwargs['size'] >= 8, "Size has to be greater or equal eight"
-        y = self.get_y(kwargs['vpos'])
-        x = self.get_x(kwargs['hpos'])
-        span = kwargs['size'] * 32
-        rx = x + span - 32 * 3
-        mx = x + 3 * 32
+    @staticmethod
+    def create_image(width):
+        assert width >= 8, "Width has to be greater or equal eight"
+        height = 3
+        image = pyglet.image.Texture.create(width*32, height*32)
+        for bridge_left_part in [(121, 0, 64), (109, 0, 32), (97, 0, 0),
+                                 (122, 32, 64), (110, 32, 32), (98, 32, 0),
+                                 (123, 64, 64), (111, 64, 32), (99, 64, 0)]:
+            image = Bridge.add_image(image, bridge_left_part[0], bridge_left_part[1], bridge_left_part[2])
 
-        self.left = [self.get_sprite(map_images[i[0]], i[1], i[2])
-                     for i in [(121, x, y), (109, x, y - 32), (97, x, y - 64),
-                               (122, x + 32, y), (110, x + 32, y - 32), (98, x + 32, y - 64),
-                               (123, x + 64, y), (111, x + 64, y - 32), (99, x + 64, y - 64)]]
-        for i in range(0, kwargs['size'] - 6):
-            self.middle += [self.get_sprite(map_images[i[0]], i[1], i[2])
-                                    for i in [(124, mx + i * 32, y),
-                                              (112, mx + i * 32, y - 32),
-                                              (100, mx + i * 32, y - 64)]]
+        offset = 3 * segment_width
+        for bridge_flat_part in range(0, width - 6):
+            for flat_part_seg in [(124, offset + bridge_flat_part * 32, 64),
+                                  (112, offset + bridge_flat_part * 32, 32),
+                                  (100, offset + bridge_flat_part * 32, 0)]:
+                image = Bridge.add_image(image, flat_part_seg[0], flat_part_seg[1], flat_part_seg[2])
+        offset += (width-6) * segment_width
+        for bridge_right_part in [(126, offset, 64), (114, offset, 32), (102, offset, 0),
+                                  (127, offset + 32, 64), (115, offset + 32, 32), (103, offset + 32, 0),
+                                  (128, offset + 64, 64), (116, offset + 64, 32), (104, offset + 64, 0)]:
+            image = Bridge.add_image(image, bridge_right_part[0], bridge_right_part[1], bridge_right_part[2])
 
-        self.right = [self.get_sprite(map_images[i[0]], i[1], i[2])
-                        for i in [(126, rx, y), (114, rx, y - 32), (102, rx, y - 64),
-                                  (127, rx + 32, y), (115, rx + 32, y - 32), (103, rx + 32, y - 64),
-                                  (128, rx + 64, y), (116, rx + 64, y - 32), (104, rx + 64, y - 64)]]
+        image.anchor_y = 64
+
+        return image
 
 
-        static_line1 = pymunk.Segment(self.space.static_body, (x + 32, y),
-                                     (x + 96, y-48), 0.0)
-
-        static_line2 = pymunk.Segment(self.space.static_body, (x + 96, y-48),
-                                     (x + 96 +((kwargs['size']-6)*32), y-48), 0.0)
-
-        static_line3 = pymunk.Segment(self.space.static_body, (x + 96 +((kwargs['size']-6)*32), y-48),
-                                     (x + 96 +((kwargs['size']-4)*32), y), 0.0)
-
-        static_line3.friction = 1
-        static_line2.friction = 1
-        static_line1.friction = 1
-        self.lines =[static_line2, static_line1, static_line3]
-        self.space.add(static_line3)
-        self.space.add(static_line2)
-        self.space.add(static_line1)
 
 
 

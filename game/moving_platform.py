@@ -5,7 +5,7 @@ from game.resources import map_images
 import pymunk
 
 
-class MovingPlatform(game.map_entity.MapEntity):
+class MovingPlatform():
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.middle = map_images[225]

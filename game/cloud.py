@@ -1,23 +1,25 @@
-import game.map_entity
-import game.resources
-from game.resources import map_images
+from game.resources import segment_width, segment_height
 import pyglet
+from game.map_entity import MapEntity
 
 
-class Cloud(game.map_entity.MapEntity):
-    def __init__(self, *args, **kwargs):
-        super().__init__(**kwargs)
+class Cloud(MapEntity):
+    def __init__(self):
+        self.image = Cloud.create_image()
 
-    def create(self, **kwargs):
-        y = self.get_y(kwargs['vpos'])
-        x = self.get_x(kwargs['hpos'])
+    @staticmethod
+    def create_image():
+        width = 5
+        height = 2
+        image = pyglet.image.Texture.create(width * segment_width, height * segment_height)
+        image = Cloud.add_image(image, 1, 0, 0)
+        image = Cloud.add_image(image, 2, 32, 0)
+        image = Cloud.add_image(image, 3, 64, 0)
+        image = Cloud.add_image(image, 4, 96, 0)
+        image = Cloud.add_image(image, 5, 128, 0)
+        image = Cloud.add_image(image, 13, 0, 32)
+        image = Cloud.add_image(image, 14, 32, 32)
+        image = Cloud.add_image(image, 15, 64, 32)
+        image = Cloud.add_image(image, 16, 96, 32)
 
-        self.content += [self.get_sprite(map_images[1], x, y)]
-        self.content += [self.get_sprite(map_images[2], x+32, y)]
-        self.content += [self.get_sprite(map_images[3], x+64, y)]
-        self.content += [self.get_sprite(map_images[4], x+96, y)]
-        self.content += [self.get_sprite(map_images[5], x+128, y)]
-        self.content += [self.get_sprite(map_images[13], x, y+32)]
-        self.content += [self.get_sprite(map_images[14], x+32, y+32)]
-        self.content += [self.get_sprite(map_images[15], x+64, y+32)]
-        self.content += [self.get_sprite(map_images[16], x+96, y+32)]
+        return image

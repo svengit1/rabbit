@@ -2,15 +2,10 @@ import pyglet
 import game.map_entity
 from pyglet.window import key
 import math
-from game.resources import rabbit_images
+from game.resources import rabbit_images, state
 import pymunk
 from pyglet.gl import glTranslatef
-import pyglet.gl as gl
-from pymunk import Vec2d
-from pymunk import Body
 from transitions import Machine, MachineError
-
-
 
 
 class Rabbit(pyglet.sprite.Sprite):
@@ -118,6 +113,7 @@ class Rabbit(pyglet.sprite.Sprite):
     def update(self, dt):
         # panning camera
         if 430 < self.x:
+            state['screen_pan_x'] += -(self.x - self.body.position.x)
             glTranslatef((self.x - self.body.position.x), 0, 0)
 
         if len(self.space.shape_query(self.shape)) > 0:
@@ -129,6 +125,7 @@ class Rabbit(pyglet.sprite.Sprite):
             self.body.position = (100, 800)
             self.body.velocity = (0, 0)
             if self.x > 430:
+                state['screen_pan_x'] += -(self.x - 430)
                 glTranslatef(self.x - 430, 0, 0)
             
         self.x = self.body.position.x

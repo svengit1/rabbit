@@ -1,20 +1,22 @@
-import game.map_entity
-import game.resources
-from game.resources import map_images
+from game.map_entity import MapEntity
+from game.resources import segment_width, segment_height
 import pyglet
 
 
-class SmallTree(game.map_entity.MapEntity):
-    def __init__(self, *args, **kwargs):
-        super().__init__(**kwargs)
+class SmallTree(MapEntity):
+    def __init__(self):
+        self.image = SmallTree.create_image()
 
-    def create(self, **kwargs):
-        y = self.get_y(kwargs['vpos'])
-        x = self.get_x(kwargs['hpos'])
-        self.content += [self.get_sprite(map_images[51], x, y+32)]
-        self.content += [self.get_sprite(map_images[52], x+32, y+32)]
-        self.content += [self.get_sprite(map_images[39], x, y)]
-        self.content += [self.get_sprite(map_images[40], x+32, y)]
+    @staticmethod
+    def create_image():
+        width = 2
+        height = 2
+        image = pyglet.image.Texture.create(width * segment_width, height * segment_height)
+        image = SmallTree.add_image(image, 51, 0, 32)
+        image = SmallTree.add_image(image, 52, 32, 32)
+        image = SmallTree.add_image(image, 39, 0, 0)
+        image = SmallTree.add_image(image, 40, 32, 0)
 
+        return image
 
 

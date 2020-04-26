@@ -1,21 +1,20 @@
-import pyglet
+from game.resources import map_images, segment_width, segment_height
+import pyglet.gl as gl
 
 
 class MapEntity:
-    def __init__(self, *args, **kwargs):
-        self.window_height = kwargs['window'].height
-        self.window_width = kwargs['window'].width
-        self.batch = kwargs['batch']
-        self.group = kwargs['group']
-        self.content = []
 
-    def get_sprite(self, img, x, y):
-        return pyglet.sprite.Sprite(img=img, y=y, x=x,
-                                    batch=self.batch, group=self.group)
+    @staticmethod
+    def add_image(image, image_id, x, y):
+        image.blit_into(map_images[image_id].get_image_data(), x, y, 0)
+        return image
 
-    def get_y(self, vpos):
-        assert 0 <= vpos <= self.window_height // 32, "Invalid vpos range"
-        return vpos * 32
+    def draw_on_position(self, **kwargs):
+        y = kwargs['vpos'] * segment_height
+        x = kwargs['hpos'] * segment_width
+        gl.glEnable(gl.GL_BLEND)
+        self.image.blit(x, y)
 
-    def get_x(self, hpos):
-        return hpos * 32
+    def draw(self):
+        gl.glEnable(gl.GL_BLEND)
+        self.image.blit(self.x, self.y)
