@@ -12,11 +12,7 @@ class SmallTree(MapEntity):
         width = 2
         height = 2
         image = pyglet.image.Texture.create(width * segment_width, height * segment_height)
-        image = SmallTree.add_image(image, 51, 0, 32)
-        image = SmallTree.add_image(image, 52, 32, 32)
-        image = SmallTree.add_image(image, 39, 0, 0)
-        image = SmallTree.add_image(image, 40, 32, 0)
-
+        image = SmallTree.add_images(image, (51, 0, 32), (52, 32, 32), (39, 0, 0), (40, 32,0))
         return image
 
 
