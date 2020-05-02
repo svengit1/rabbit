@@ -1,3 +1,4 @@
+
 import pyglet as pyglet
 from pyglet.window import FPSDisplay
 from game.platform import Platform
@@ -6,7 +7,7 @@ from game.large_tree import LargeTree
 from game.bush import Bush
 from game.cloud import Cloud
 from game.bridge import Bridge
-from game.rabbit import Rabbit
+from game.player.rabbit import Rabbit
 import pymunk
 from pymunk import Vec2d
 import pyglet.gl as gl
@@ -29,7 +30,7 @@ score_label = pyglet.text.Label(text="Score: 0",
 
 # Physics stuff
 space = pymunk.Space()
-space.gravity = Vec2d(0.0, -900.0)
+space.gravity = Vec2d(0.0, -1200.0)
 
 
 p10 = Platform(space=space, hpos=0, vpos=15, width=10)
