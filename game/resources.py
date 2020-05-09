@@ -6,6 +6,7 @@ def center_image(image):
     image.anchor_x = image.width / 2
     image.anchor_y = image.height / 2
 
+
 segment_width = 32
 segment_height = 32
 
@@ -16,9 +17,10 @@ state = dict()
 state['screen_pan_x'] = 0
 state['score'] = 0
 
-
 # Tell pyglet where to find the resources
-pyglet.resource.path = ['./resources', './resources/map_art', './resources/player']
+pyglet.resource.path = [
+    './resources', './resources/map_art', './resources/player'
+]
 pyglet.resource.reindex()
 
 # Load the three main resources and get them to draw centered
@@ -27,7 +29,6 @@ tile_ground_left = pyglet.resource.image("tile-ground-left.png")
 tile_ground = pyglet.resource.image("tile-ground.png")
 
 tile_ground_right = pyglet.resource.image("tile-ground-right.png")
-
 
 stone_platform_left = pyglet.resource.image("stone-platform-left.png")
 

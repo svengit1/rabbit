@@ -1,9 +1,11 @@
+import math
+
 import pyglet
-from game.resources import segment_width, segment_height
 import pymunk
 from pymunk.body import Body
+
 from game.map_entity import MapEntity
-import math
+from game.resources import segment_height, segment_width
 
 
 class Platform(MapEntity):
@@ -16,8 +18,9 @@ class Platform(MapEntity):
         self.__init_physics()
 
     def __init_physics(self):
-        vs = [(0, - segment_width), (0, -(self.width - 1) * segment_width),
-              (segment_height, -(self.width - 1) * segment_width), (segment_height, -segment_width)]
+        vs = [(0, -segment_width), (0, -(self.width - 1) * segment_width),
+              (segment_height, -(self.width - 1) * segment_width),
+              (segment_height, -segment_width)]
         self.body = pymunk.Body(mass=0, moment=0, body_type=Body.KINEMATIC)
         self.shape = pymunk.Poly(self.body, vs)
         self.shape.friction = 4.0
@@ -30,13 +33,13 @@ class Platform(MapEntity):
     @staticmethod
     def create_image(width):
         assert width >= 4, "Width has to be greater or equal than four"
-        image = pyglet.image.Texture.create(width*32, 32)
+        image = pyglet.image.Texture.create(width * 32, 32)
         offset = 0
         image = Platform.add_image(image, 217, offset, 0)
         offset += segment_width
         image = Platform.add_image(image, 218, offset, 0)
         offset += segment_width
-        for j in range(width-4):
+        for j in range(width - 4):
             image = Platform.add_image(image, 225, offset, 0)
             offset += segment_width
         image = Platform.add_image(image, 223, offset, 0)

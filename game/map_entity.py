@@ -1,9 +1,9 @@
-from game.resources import map_images, segment_width, segment_height
 import pyglet.gl as gl
+
+from game.resources import map_images, segment_height, segment_width
 
 
 class MapEntity:
-
     @staticmethod
     def add_image(image, image_id, x, y):
         image.blit_into(map_images[image_id].get_image_data(), x, y, 0)
@@ -14,7 +14,7 @@ class MapEntity:
         for img in args:
             image = MapEntity.add_image(image, img[0], img[1], img[2])
         return image
-    
+
     def draw_on_position(self, **kwargs):
         y = kwargs['vpos'] * segment_height
         x = kwargs['hpos'] * segment_width

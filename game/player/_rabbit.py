@@ -1,5 +1,6 @@
 from transitions import Machine, MachineError
 
+
 class PlayerFSM():
     states = ['rl', 'rr', 'sl', 'sr', 'jl', 'jr', 'fl', 'fr']
 
