@@ -1,4 +1,5 @@
 import pyglet
+
 from game.map_entity import MapEntity
 from game.resources import segment_height, segment_width
 

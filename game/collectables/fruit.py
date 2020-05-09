@@ -1,7 +1,9 @@
-import pyglet
 import math
-from game.resources import map_images, segment_width, segment_height
+
+import pyglet
 import pymunk
+
+from game.resources import map_images, segment_height, segment_width
 
 
 class Fruit(pyglet.sprite.Sprite):
@@ -26,7 +28,9 @@ class Fruit(pyglet.sprite.Sprite):
 
     def __init_physics(self):
         vs = [(0, 0), (0, -32), (32, -32), (32, 0)]
-        self.body = pymunk.Body(mass=0, moment=0, body_type=pymunk.Body.KINEMATIC)
+        self.body = pymunk.Body(mass=0,
+                                moment=0,
+                                body_type=pymunk.Body.KINEMATIC)
         self.shape = pymunk.Poly(self.body, vs)
         self.body.position = self.x, self.y
         self.body.angle = 0.5 * math.pi

@@ -1,22 +1,23 @@
-import pyglet
-import game.map_entity
-from pyglet.window import key
 import math
-from game.resources import rabbit_images, state
+
+import pyglet
 import pymunk
 from pyglet.gl import glTranslatef
-from game.player._rabbit import PlayerFSM
+from pyglet.window import key
 from transitions import Machine, MachineError
+
+import game.map_entity
+from game.player._rabbit import PlayerFSM
+from game.resources import rabbit_images, state
 
 
 class Rabbit(pyglet.sprite.Sprite, PlayerFSM):
-
     def __init__(self, *args, **kwargs):
         self.space = kwargs['space']
         kwargs.pop('space')
         super().__init__(img=rabbit_images, **kwargs)
         self.key_handler = key.KeyStateHandler()
-        self.x, self.y =  kwargs['x'], kwargs['y']
+        self.x, self.y = kwargs['x'], kwargs['y']
         self.__init_state()
         self.__init_graphics()
         self.__init_physics()
@@ -33,9 +34,11 @@ class Rabbit(pyglet.sprite.Sprite, PlayerFSM):
         self.fall_right = rabbit_imgs_right[0]
         self.jump_left = rabbit_imgs_left[1]
         self.fall_left = rabbit_imgs_left[0]
-        self.rabbit_run_right = pyglet.image.Animation.from_image_sequence(rabbit_imgs_right[8:12], 0.08)
+        self.rabbit_run_right = pyglet.image.Animation.from_image_sequence(
+            rabbit_imgs_right[8:12], 0.08)
         self.rabbit_run_right_beginning = rabbit_imgs_right[8]
-        self.rabbit_run_left = pyglet.image.Animation.from_image_sequence(rabbit_imgs_left[8:12], 0.08)
+        self.rabbit_run_left = pyglet.image.Animation.from_image_sequence(
+            rabbit_imgs_left[8:12], 0.08)
         self.rabbit_still_right = rabbit_imgs_right[7]
         self.rabbit_still_left = rabbit_imgs_left[7]
         self.image = self.rabbit_still_right
@@ -44,7 +47,7 @@ class Rabbit(pyglet.sprite.Sprite, PlayerFSM):
         self.speed_limit_y = 200
         self.jump_force = 20000
         self.running_velocity = 450
-        self.velocity_comp = math.sqrt(self.running_velocity ** 2 / 2)
+        self.velocity_comp = math.sqrt(self.running_velocity**2 / 2)
         vs = [(0, 10), (0, -10), (64, 10), (64, -10)]
         mass = 40
         moment = pymunk.moment_for_poly(mass, vs)
@@ -58,7 +61,8 @@ class Rabbit(pyglet.sprite.Sprite, PlayerFSM):
         self.body.center_of_gravity = 10, 0
         self.carrot_collision_handler = self.space.add_collision_handler(1, 2)
         self.carrot_collision_handler.pre_solve = self.collision_with_food
-        self.platform_collision_handler = self.space.add_collision_handler(1, 3)
+        self.platform_collision_handler = self.space.add_collision_handler(
+            1, 3)
         self.platform_collision_handler.pre_solve = self.standing_on_platform
 
     def collision_with_food(self, arbiter, space, data):
@@ -68,9 +72,9 @@ class Rabbit(pyglet.sprite.Sprite, PlayerFSM):
         return False
 
     def standing_on_platform(self, arbiter, space, data):
-        self.still = arbiter.shapes[0].body.velocity == arbiter.shapes[1].body.velocity
+        self.still = arbiter.shapes[0].body.velocity == arbiter.shapes[
+            1].body.velocity
         return True
-
 
     @staticmethod
     def make_sprite_image():
@@ -79,7 +83,8 @@ class Rabbit(pyglet.sprite.Sprite, PlayerFSM):
         for i in range(16, len(game.resources.rabbit_images) - 3, 3):
             image = pyglet.image.Texture.create(128, 96)
             for j in range(3):
-                image.blit_into(rabbit_images[i + j].get_image_data(), 0, 32 * j, 0)
+                image.blit_into(rabbit_images[i + j].get_image_data(), 0,
+                                32 * j, 0)
             image.anchor_x = 64
             rabbit_imgs_right.append(image)
             rabbit_imgs_left.append(image.get_transform(flip_x=True))
@@ -130,11 +135,13 @@ class Rabbit(pyglet.sprite.Sprite, PlayerFSM):
         # jump
         if self.key_handler[key.UP] and self.touching_ground and self.state not in ['jr', 'jl', 'fl', 'fr']\
                 and self.body.velocity.y < self.speed_limit_y:
-            self.body.apply_impulse_at_local_point([self.jump_force, 0], (0, 0))
+            self.body.apply_impulse_at_local_point([self.jump_force, 0],
+                                                   (0, 0))
             self.touching_ground = False
 
         # left movement
-        if not self.key_handler[key.RIGHT] and self.key_handler[key.LEFT] and self.touching_ground:
+        if not self.key_handler[key.RIGHT] and self.key_handler[
+                key.LEFT] and self.touching_ground:
             if self.body.velocity.y > 1:
                 speed_x, speed_y = -self.velocity_comp - 50, self.velocity_comp
             else:
@@ -147,9 +154,10 @@ class Rabbit(pyglet.sprite.Sprite, PlayerFSM):
                 self.body.apply_impulse_at_local_point([0, 150], (0, 0))
             if self.body.velocity.x < 0 and self.key_handler[key.RIGHT]:
                 self.body.apply_impulse_at_local_point([0, -150], (0, 0))
-  
+
         # right movement
-        if not self.key_handler[key.LEFT] and self.key_handler[key.RIGHT] and self.touching_ground:
+        if not self.key_handler[key.LEFT] and self.key_handler[
+                key.RIGHT] and self.touching_ground:
             if self.body.velocity.y > 1:
                 speed_x, speed_y = self.velocity_comp + 50, self.velocity_comp
             else:

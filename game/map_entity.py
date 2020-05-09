@@ -1,4 +1,5 @@
 import pyglet.gl as gl
+
 from game.resources import map_images, segment_height, segment_width
 
 
