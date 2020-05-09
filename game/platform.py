@@ -1,7 +1,9 @@
 import pyglet
-from game.resources import map_images, segment_width, segment_height
+from game.resources import segment_width, segment_height
 import pymunk
+from pymunk.body import Body
 from game.map_entity import MapEntity
+import math
 
 
 class Platform(MapEntity):
@@ -11,11 +13,19 @@ class Platform(MapEntity):
         self.y = kwargs['vpos'] * segment_height
         self.x = kwargs['hpos'] * segment_width
         self.image = Platform.create_image(self.width)
-        static_line = pymunk.Segment(self.space.static_body, (self.x + segment_width, self.y+segment_height),
-                                     (self.x + segment_width + (self.width-2) * segment_width,
-                                      self.y + segment_height), 0.0)
-        static_line.friction = 1.0
-        self.space.add(static_line)
+        self.__init_physics()
+
+    def __init_physics(self):
+        vs = [(0, - segment_width), (0, -(self.width - 1) * segment_width),
+              (segment_height, -(self.width - 1) * segment_width), (segment_height, -segment_width)]
+        self.body = pymunk.Body(mass=0, moment=0, body_type=Body.KINEMATIC)
+        self.shape = pymunk.Poly(self.body, vs)
+        self.shape.friction = 4.0
+        self.shape.elasticity = 0
+        self.shape.collision_type = 3
+        self.body.angle = 0.5 * math.pi
+        self.space.add(self.body, self.shape)
+        self.body.position = self.x, self.y
 
     @staticmethod
     def create_image(width):

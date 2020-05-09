@@ -19,7 +19,8 @@ class Bridge(MapEntity):
                               (self.x + 96 + (bridge_width-6)*32, self.y-48), 0.0)
         slope_right = pymunk.Segment(self.space.static_body, (self.x + 96 + (bridge_width-6)*32, self.y-48),
                                      (self.x + 96 + (bridge_width-4)*32, self.y), 0.0)
-        slope_left.friction, flat.friction, slope_right.friction = 1, 1, 1
+        slope_left.friction, flat.friction, slope_right.friction = 1, 3, 1
+        flat.collision_type = 3
         self.lines = []
         self.lines = [slope_left, flat, slope_right]
         self.space.add(self.lines)

@@ -24,7 +24,8 @@ class Rabbit(pyglet.sprite.Sprite, PlayerFSM):
     def __init_state(self):
         self.machine = Machine(self, states=Rabbit.states, initial='fr')
         self.fsm()
-        self.standing_on_ground = False
+        self.touching_ground = False
+        self.still = False
 
     def __init_graphics(self):
         rabbit_imgs_left, rabbit_imgs_right = Rabbit.make_sprite_image()
@@ -40,6 +41,8 @@ class Rabbit(pyglet.sprite.Sprite, PlayerFSM):
         self.image = self.rabbit_still_right
 
     def __init_physics(self):
+        self.speed_limit_y = 200
+        self.jump_force = 20000
         self.running_velocity = 450
         self.velocity_comp = math.sqrt(self.running_velocity ** 2 / 2)
         vs = [(0, 10), (0, -10), (64, 10), (64, -10)]
@@ -48,10 +51,26 @@ class Rabbit(pyglet.sprite.Sprite, PlayerFSM):
         self.body = pymunk.Body(mass, moment)
         self.shape = pymunk.Poly(self.body, vs)
         self.shape.friction = 1.0
+        self.shape.collision_type = 1
         self.body.position = self.x, self.y
         self.body.angle = 0.5 * math.pi
         self.space.add(self.body, self.shape)
         self.body.center_of_gravity = 10, 0
+        self.carrot_collision_handler = self.space.add_collision_handler(1, 2)
+        self.carrot_collision_handler.pre_solve = self.collision_with_food
+        self.platform_collision_handler = self.space.add_collision_handler(1, 3)
+        self.platform_collision_handler.pre_solve = self.standing_on_platform
+
+    def collision_with_food(self, arbiter, space, data):
+        state['score'] += arbiter.shapes[1].sprite.points
+        space.remove(arbiter.shapes[1])
+        arbiter.shapes[1].sprite.batch = None
+        return False
+
+    def standing_on_platform(self, arbiter, space, data):
+        self.still = arbiter.shapes[0].body.velocity == arbiter.shapes[1].body.velocity
+        return True
+
 
     @staticmethod
     def make_sprite_image():
@@ -88,17 +107,15 @@ class Rabbit(pyglet.sprite.Sprite, PlayerFSM):
 
     def __update_state(self, dt):
         if len(self.space.shape_query(self.shape)) > 0:
-            self.standing_on_ground = True
+            self.touching_ground = True
         else:
-            self.standing_on_ground = False
-
+            self.touching_ground = False
         try:
-            if math.isclose(self.body.velocity.x, 0, abs_tol=0.01) \
-                    and math.isclose(self.body.velocity.y, 0, abs_tol=0.01):
+            if self.touching_ground and self.still:
                 self.stop()
-            elif self.body.velocity.y > 1 and not self.standing_on_ground:
+            elif self.body.velocity.y > 1 and not self.touching_ground:
                 self.jump()
-            elif self.body.velocity.y < -1 and not self.standing_on_ground:
+            elif self.body.velocity.y < -1 and not self.touching_ground:
                 self.fall()
             elif self.body.velocity.x > 0:
                 self.run_right()
@@ -111,12 +128,13 @@ class Rabbit(pyglet.sprite.Sprite, PlayerFSM):
 
     def __update_movement(self, dt):
         # jump
-        if self.key_handler[key.UP] and self.standing_on_ground:
-            self.body.apply_impulse_at_local_point([18550, 0], (0, 0))
-            self.standing_on_ground = False
+        if self.key_handler[key.UP] and self.touching_ground and self.state not in ['jr', 'jl', 'fl', 'fr']\
+                and self.body.velocity.y < self.speed_limit_y:
+            self.body.apply_impulse_at_local_point([self.jump_force, 0], (0, 0))
+            self.touching_ground = False
 
         # left movement
-        if not self.key_handler[key.RIGHT] and self.key_handler[key.LEFT] and self.standing_on_ground:
+        if not self.key_handler[key.RIGHT] and self.key_handler[key.LEFT] and self.touching_ground:
             if self.body.velocity.y > 1:
                 speed_x, speed_y = -self.velocity_comp - 50, self.velocity_comp
             else:
@@ -124,20 +142,16 @@ class Rabbit(pyglet.sprite.Sprite, PlayerFSM):
             self.body.velocity = (speed_x, speed_y)
 
         # slow down in jump
-        if not self.standing_on_ground:
+        if not self.touching_ground:
             if self.body.velocity.x > 0 and self.key_handler[key.LEFT]:
-                self.body.apply_impulse_at_local_point([0, 100], (0, 0))
+                self.body.apply_impulse_at_local_point([0, 150], (0, 0))
             if self.body.velocity.x < 0 and self.key_handler[key.RIGHT]:
-                self.body.apply_impulse_at_local_point([0, -100], (0, 0))
+                self.body.apply_impulse_at_local_point([0, -150], (0, 0))
   
         # right movement
-        if not self.key_handler[key.LEFT] and self.key_handler[key.RIGHT] and self.standing_on_ground:
+        if not self.key_handler[key.LEFT] and self.key_handler[key.RIGHT] and self.touching_ground:
             if self.body.velocity.y > 1:
                 speed_x, speed_y = self.velocity_comp + 50, self.velocity_comp
             else:
                 speed_x, speed_y = self.running_velocity, self.body.velocity.y
             self.body.velocity = (speed_x, speed_y)
-
-        if self.standing_on_ground and not self.key_handler[key.UP] and \
-           not self.key_handler[key.RIGHT] and not self.key_handler[key.LEFT]:
-            self.body.velocity = (0, 0)

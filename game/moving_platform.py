@@ -1,29 +1,46 @@
 import pyglet
-import game.map_entity
-import game.resources
-from game.resources import map_images
+from game.resources import segment_width, segment_height
+from game.platform import Platform
 import pymunk
+from pymunk.body import Body
+import math
 
 
-class MovingPlatform():
+class MovingPlatform(pyglet.sprite.Sprite):
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.middle = map_images[225]
+        self.platform_width = kwargs['width']
         self.space = kwargs['space']
+        self.velocity = kwargs['velocity']
+        self.initial_position = tuple([i * segment_width for i in kwargs['initial_position']])
+        self.path_length = kwargs['path_length']
+        kwargs.pop('space')
+        kwargs.pop('width')
+        kwargs.pop('velocity')
+        kwargs.pop('initial_position')
+        kwargs.pop('path_length')
+        x, y = self.initial_position
+        super().__init__(img=Platform.create_image(self.platform_width), x=x, y=y, **kwargs)
+        self.__init_physics()
 
-    def create(self, **kwargs):
-        assert kwargs['size'] >= 4, "Size has to be greater or equal two"
-        y = self.get_y(kwargs['vpos'])
-        x = self.get_x(kwargs['hpos'])
-        self.content = [self.get_sprite(map_images[i[0]], i[1], y)
-                        for i in [(217, x), (218, x + 32)]]
+    def __init_physics(self):
+        vs = [(0, - segment_width), (0, -(self.platform_width - 1) * segment_width),
+              (segment_height, -(self.platform_width - 1) * segment_width), (segment_height, -segment_width)]
+        self.body = pymunk.Body(mass=0, moment=0, body_type=Body.KINEMATIC)
+        self.shape = pymunk.Poly(self.body, vs)
+        self.shape.friction = 4.0
+        self.shape.collision_type = 3
+        self.body.angle = 0.5 * math.pi
+        self.space.add(self.body, self.shape)
+        self.body.position = self.initial_position
+        self.body.velocity = self.velocity
 
-        self.content += [self.get_sprite(self.middle, x + 32*2 + i*32, y)
-                         for i in range(0, kwargs['size'] - 4)]
-
-        self.content += [self.get_sprite(map_images[i[0]], i[1], y)
-                         for i in [(223, x + (kwargs['size']-2)*32), (224, x + (kwargs['size']-2)*32 + 32)]]
-        static_line = pymunk.Segment(self.space.static_body, (x+32 , y+32), (x + 32 + (kwargs['size']-2)*32, y+32), 0.0)
-        static_line.friction = 1.0
-        self.space.add(static_line)
-
+    def update(self, dt):
+        self.x = self.body.position.x
+        self.y = self.body.position.y
+        p = math.sqrt((self.initial_position[0] - self.x)**2 + (self.initial_position[1] - self.y)**2)
+        if math.isclose(p, self.path_length, abs_tol=0.9) and self.body.velocity == self.velocity:
+            # reverse velocity
+            self.body.velocity = tuple([i*-1 for i in self.body.velocity])
+        if math.isclose(p, 0, abs_tol=0.9) and self.body.velocity != self.velocity:
+            # reverse velocity
+            self.body.velocity = tuple([i*-1 for i in self.body.velocity])
