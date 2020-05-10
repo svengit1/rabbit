@@ -14,8 +14,7 @@ window_width = 960
 window_height = 832
 
 state = dict()
-state['screen_pan_x'] = 0
-state['score'] = 0
+state = {'screen_pan_x': 0, 'score': 0, 'lives': 3}
 
 # Tell pyglet where to find the resources
 pyglet.resource.path = [

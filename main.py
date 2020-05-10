@@ -28,6 +28,12 @@ score_label = pyglet.text.Label(text="Score: 0",
                                 font_size=24,
                                 bold=True,
                                 color=(255, 255, 255, 255))
+lives_label = pyglet.text.Label(text="Lives: 0",
+                                x=200,
+                                y=800,
+                                font_size=24,
+                                bold=True,
+                                color=(255, 255, 255, 255))
 
 # Physics stuff
 space = pymunk.Space()
@@ -59,6 +65,7 @@ carrot = Fruit(space=space,
                vpos=19,
                batch=world_batch,
                group=background)
+
 moving_platform3 = MovingPlatform(space=space,
                                   width=20,
                                   initial_position=(35, 10),
@@ -101,8 +108,9 @@ def draw_debug_box(sprite):
                          ('c3f', (1, 0, 0) * n))
 
 
-def update_score_label():
+def update_labels():
     score_label.text = "Score: " + str(state['score'])
+    lives_label.text = "Lives: " + str(state['lives'])
 
 
 @window.event
@@ -132,6 +140,7 @@ def on_draw():
     fps_display.draw()
 
     sticky_draw(score_label, window)
+    sticky_draw(lives_label, window)
 
 
 def update(dt):
@@ -141,7 +150,7 @@ def update(dt):
     #moving_platform1.update(dt)
     #moving_platform2.update(dt)
     moving_platform3.update(dt)
-    update_score_label()
+    update_labels()
 
 
 if __name__ == "__main__":
