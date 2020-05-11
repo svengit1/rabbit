@@ -3,7 +3,7 @@ import math
 import pyglet
 import pymunk
 
-from game.resources import map_images, segment_height, segment_width
+from resources import map_images, segment_height, segment_width
 
 
 class Fruit(pyglet.sprite.Sprite):

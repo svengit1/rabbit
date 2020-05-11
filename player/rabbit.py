@@ -6,9 +6,8 @@ from pyglet.gl import glTranslatef
 from pyglet.window import key
 from transitions import Machine, MachineError
 
-import game.map_entity
-from game.player._rabbit import PlayerFSM
-from game.resources import rabbit_images, state
+from player._rabbit import PlayerFSM
+from resources import rabbit_images, state
 
 
 class Rabbit(pyglet.sprite.Sprite, PlayerFSM):
@@ -103,7 +102,7 @@ class Rabbit(pyglet.sprite.Sprite, PlayerFSM):
     def make_sprite_image():
         rabbit_imgs_right = []
         rabbit_imgs_left = []
-        for i in range(16, len(game.resources.rabbit_images) - 3, 3):
+        for i in range(16, len(rabbit_images) - 3, 3):
             image = pyglet.image.Texture.create(128, 96)
             for j in range(3):
                 image.blit_into(rabbit_images[i + j].get_image_data(), 0,

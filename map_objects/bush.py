@@ -1,5 +1,5 @@
-from game.map_entity import MapEntity
-from game.resources import map_images
+from map_objects.map_entity import MapEntity
+from resources import map_images
 
 
 class Bush(MapEntity):

@@ -4,8 +4,8 @@ import pyglet
 import pymunk
 from pymunk.body import Body
 
-from game.platform import Platform
-from game.resources import segment_height, segment_width
+from map_objects.platform import Platform
+from resources import segment_height, segment_width
 
 
 class MovingPlatform(pyglet.sprite.Sprite):

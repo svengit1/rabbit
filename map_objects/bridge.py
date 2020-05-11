@@ -1,10 +1,9 @@
 import pyglet
 import pymunk
 
-import game.map_entity
-import game.resources
-from game.map_entity import MapEntity
-from game.resources import map_images, segment_height, segment_width
+import resources
+from map_objects.map_entity import MapEntity
+from resources import map_images, segment_height, segment_width
 
 
 class Bridge(MapEntity):
