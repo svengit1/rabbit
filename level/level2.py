@@ -1,11 +1,6 @@
-import pyglet
-import pyglet.gl as gl
-
-from collectables.collectable import Collectable
 from collectables.fruit import Fruit
 from collectables.level_end import LevelEnd
 from level.base_level import BaseLevel
-from map_objects.bridge import Bridge
 from map_objects.bush import Bush
 from map_objects.cloud import Cloud
 from map_objects.large_tree import LargeTree
@@ -14,7 +9,7 @@ from map_objects.platform import Platform
 from map_objects.small_tree import SmallTree
 
 
-class Level1(BaseLevel):
+class Level2(BaseLevel):
     def __init__(self):
         super().__init__()
 
@@ -22,7 +17,6 @@ class Level1(BaseLevel):
         self.store(
             Platform(space=space, hpos=0, vpos=15, width=10),
             Platform(space=space, hpos=16, vpos=15, width=8),
-            Bridge(space=space, hpos=8, vpos=16, width=10),
             Platform(space=space, hpos=25, vpos=17, width=6),
             Platform(space=space, hpos=32, vpos=15, width=10),
             LargeTree(hpos=27, vpos=18), Bush(hpos=4, vpos=16),

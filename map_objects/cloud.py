@@ -5,8 +5,10 @@ from resources import segment_height, segment_width
 
 
 class Cloud(MapEntity):
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.image = Cloud.create_image()
+        self.x = kwargs['hpos'] * segment_width
+        self.y = kwargs['vpos'] * segment_height
 
     @staticmethod
     def create_image():

@@ -7,13 +7,15 @@ from pyglet.window import key
 from transitions import Machine, MachineError
 
 from player._rabbit import PlayerFSM
-from resources import rabbit_images, state
+from resources import last_level, rabbit_images, state
 
 
 class Rabbit(pyglet.sprite.Sprite, PlayerFSM):
     def __init__(self, *args, **kwargs):
         self.space = kwargs['space']
+        self.game = kwargs['game']
         kwargs.pop('space')
+        kwargs.pop('game')
         super().__init__(img=rabbit_images, **kwargs)
         self.key_handler = key.KeyStateHandler()
         self.x, self.y = kwargs['x'], kwargs['y']
@@ -55,24 +57,36 @@ class Rabbit(pyglet.sprite.Sprite, PlayerFSM):
         self.shape = pymunk.Poly(self.body, vs)
         self.shape.friction = 1.0
         self.shape.collision_type = 1
+        self.shape.elasticity = 0.9
         self.body.position = self.x, self.y
         self.body.angle = 0.5 * math.pi
         self.space.add(self.body, self.shape)
         self.body.center_of_gravity = 10, 0
-        self.carrot_collision_handler = self.space.add_collision_handler(1, 2)
-        self.carrot_collision_handler.pre_solve = self.collision_with_food
+        # Collison handlers
+        self.space.add_collision_handler(
+            1, 2).pre_solve = self.collision_with_food
         self.platform_collision_handler = self.space.add_collision_handler(
             1, 3)
         self.slope_collision_handler = self.space.add_collision_handler(1, 4)
+        self.level_end_collision_handler = self.space.add_collision_handler(
+            1, 10)
+        self.level_end_collision_handler.pre_solve = self.level_completed
         self.platform_collision_handler.pre_solve = self.standing_on_platform
         self.platform_collision_handler.separate = self.separated_from_platform
         self.slope_collision_handler.pre_solve = self.standing_on_slope
         self.slope_collision_handler.separate = self.separated_from_slope
 
+    def level_completed(self, aarbiter, space, data):
+        if state['level'] != last_level:
+            state['level'] = state['level'] + 1
+            self.game.on_new_level()
+            self.pan_screen_to_origin()
+        return False
+
     def collision_with_food(self, arbiter, space, data):
         state['score'] += arbiter.shapes[1].sprite.points
         space.remove(arbiter.shapes[1])
-        arbiter.shapes[1].sprite.batch = None
+        self.game.current_level().scenery.remove(arbiter.shapes[1].sprite)
         return False
 
     def separated_from_slope(self, arbiter, space, data):
@@ -112,6 +126,11 @@ class Rabbit(pyglet.sprite.Sprite, PlayerFSM):
             rabbit_imgs_left.append(image.get_transform(flip_x=True))
         return rabbit_imgs_left, rabbit_imgs_right
 
+    def pan_screen_to_origin(self):
+        if self.x > 430:
+            state['screen_pan_x'] += -(self.x - 430)
+            glTranslatef(self.x - 430, 0, 0)
+
     def update(self, dt):
         self.__update_screen_pan(dt)
         self.x = self.body.position.x
@@ -131,13 +150,9 @@ class Rabbit(pyglet.sprite.Sprite, PlayerFSM):
             self.body.velocity = (0, 0)
             state['lives'] = state['lives'] - 1
             if state['lives'] == 0:
-                print('all lives gone')
                 state['lives'] = 3
                 state['score'] = 0
-
-            if self.x > 430:
-                state['screen_pan_x'] += -(self.x - 430)
-                glTranslatef(self.x - 430, 0, 0)
+            self.pan_screen_to_origin()
 
     def __update_state(self, dt):
         try:

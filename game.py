@@ -6,6 +6,7 @@ from pymunk import Vec2d
 
 from collectables.fruit import Fruit
 from level.level1 import Level1
+from level.level2 import Level2
 from map_objects.bridge import Bridge
 from map_objects.bush import Bush
 from map_objects.cloud import Cloud
@@ -38,26 +39,32 @@ class Game:
                                              font_size=24,
                                              bold=True,
                                              color=(255, 255, 255, 255))
+        self.level_label = pyglet.text.Label(text="Level: 0",
+                                             x=340,
+                                             y=800,
+                                             font_size=24,
+                                             bold=True,
+                                             color=(255, 255, 255, 255))
 
+        self.fps_display = FPSDisplay(window)
+        self.levels = [Level1(), Level2()]
+        self.on_new_level()
+
+    def on_new_level(self):
         # Physics stuff
         self.space = pymunk.Space()
         self.space.gravity = Vec2d(0.0, -1200.0)
 
         self.player = Rabbit(x=100,
                              y=600,
-                             batch=self.world_batch,
                              group=self.background,
-                             space=self.space)
-
-        window.push_handlers(self.player.key_handler)
-
-        self.fps_display = FPSDisplay(window)
-        self.levels = [
-            Level1(self.space, self.world_batch, self.background),
-        ]
+                             space=self.space,
+                             game=self)
+        self.window.push_handlers(self.player.key_handler)
+        self.current_level().create(self.space, self.background)
 
     def current_level(self):
-        return self.levels[0]
+        return self.levels[state['level']]
 
     def sticky_draw(self, obj, win):
         gl.glMatrixMode(gl.GL_MODELVIEW)
@@ -72,31 +79,22 @@ class Game:
         gl.glMatrixMode(gl.GL_MODELVIEW)
         gl.glPopMatrix()
 
-    def draw_debug_box(self, sprite):
-        ps = sprite.shape.get_vertices()
-        ps = [p.rotated(sprite.body.angle) + sprite.body.position for p in ps]
-        n = len(ps)
-        ps = [c for p in ps for c in p]
-        pyglet.graphics.draw(n, pyglet.gl.GL_LINE_LOOP, ('v2f', ps),
-                             ('c3f', (1, 0, 0) * n))
-
     def update_labels(self):
         self.score_label.text = "Score: " + str(state['score'])
         self.lives_label.text = "Lives: " + str(state['lives'])
+        self.level_label.text = "Level: " + str(state['level'])
 
     def update(self, dt):
         self.space.step(dt)
         self.player.update(dt)
         self.current_level().update(dt)
+        self.update_labels()
 
     def draw(self):
         self.background_colour.blit(state['screen_pan_x'], 0)
         self.current_level().draw()
-        #current_level.draw()
-        self.update_labels()
-        self.world_batch.draw()
-
-        # draw_debug_box(rabbit)
+        self.player.draw()
+        #draw_debug_box(rabbit)
         #draw_debug_box(carrot)
         #draw_debug_box(moving_platform)
         #draw_debug_box(p10)
@@ -104,3 +102,4 @@ class Game:
 
         self.sticky_draw(self.score_label, self.window)
         self.sticky_draw(self.lives_label, self.window)
+        self.sticky_draw(self.level_label, self.window)

@@ -5,8 +5,10 @@ from resources import segment_height, segment_width
 
 
 class SmallTree(MapEntity):
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.image = SmallTree.create_image()
+        self.x = kwargs['hpos'] * segment_width
+        self.y = kwargs['vpos'] * segment_height
 
     @staticmethod
     def create_image():
