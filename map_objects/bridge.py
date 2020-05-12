@@ -1,10 +1,9 @@
 import pyglet
 import pymunk
 
-import game.map_entity
-import game.resources
-from game.map_entity import MapEntity
-from game.resources import map_images, segment_height, segment_width
+import resources
+from map_objects.map_entity import MapEntity
+from resources import map_images, segment_height, segment_width
 
 
 class Bridge(MapEntity):
@@ -26,6 +25,7 @@ class Bridge(MapEntity):
             (self.x + 96 + (bridge_width - 4) * 32, self.y), 0.0)
         slope_left.friction, flat.friction, slope_right.friction = 1, 3, 1
         flat.collision_type = 3
+        slope_left.collision_type, slope_right.collision_type = 4, 4
         self.lines = []
         self.lines = [slope_left, flat, slope_right]
         self.space.add(self.lines)

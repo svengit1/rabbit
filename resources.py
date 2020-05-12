@@ -14,13 +14,11 @@ window_width = 960
 window_height = 832
 
 state = dict()
-state['screen_pan_x'] = 0
-state['score'] = 0
+state = {'screen_pan_x': 0, 'score': 0, 'lives': 3, 'level': 0}
+last_level = 1
 
 # Tell pyglet where to find the resources
-pyglet.resource.path = [
-    './resources', './resources/map_art', './resources/player'
-]
+pyglet.resource.path = ['./images', './images/map_art', './images/player']
 pyglet.resource.reindex()
 
 # Load the three main resources and get them to draw centered
