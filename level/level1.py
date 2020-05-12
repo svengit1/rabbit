@@ -2,6 +2,7 @@ import pyglet
 import pyglet.gl as gl
 
 from collectables.collectable import Collectable
+from map_objects.spring import Spring
 from collectables.fruit import Fruit
 from collectables.level_end import LevelEnd
 from level.base_level import BaseLevel
@@ -23,6 +24,7 @@ class Level1(BaseLevel):
             Platform(space=space, hpos=0, vpos=15, width=10),
             Platform(space=space, hpos=16, vpos=15, width=8),
             Bridge(space=space, hpos=8, vpos=16, width=10),
+            Spring(space=space, hpos= 22, vpos=16),
             Platform(space=space, hpos=25, vpos=17, width=6),
             Platform(space=space, hpos=32, vpos=15, width=10),
             LargeTree(hpos=27, vpos=18), Bush(hpos=4, vpos=16),

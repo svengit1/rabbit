@@ -1,12 +1,6 @@
 import pyglet
-import pyglet.gl as gl
-import pymunk
-from pygame.sprite import Sprite
-from pyglet.window import FPSDisplay
-from pymunk import Vec2d
-
+from map_objects.spring import Spring
 from collectables.collectable import Collectable
-from collectables.fruit import Fruit
 
 
 class BaseLevel:
@@ -26,6 +20,8 @@ class BaseLevel:
         ps = [c for p in ps for c in p]
         pyglet.graphics.draw(n, pyglet.gl.GL_LINE_LOOP, ('v2f', ps),
                              ('c3f', (1, 0, 0) * n))
+
+
 
     def draw(self):
         for s in self.scenery:
