@@ -4,6 +4,7 @@ import pyglet
 import pymunk
 from pyglet.gl import glTranslatef
 from pyglet.window import key
+from pymunk import Vec2d
 from transitions import Machine, MachineError
 
 from player._rabbit import PlayerFSM
@@ -107,9 +108,11 @@ class Rabbit(pyglet.sprite.Sprite, PlayerFSM):
         self.touching_ground = False
 
     def standing_on_platform(self, arbiter, space, data):
-        self.still = self.compare_velocity(arbiter.shapes[0].body.velocity,
-                                           arbiter.shapes[1].body.velocity)
-        self.touching_ground = True
+        normal = Vec2d(0, -1)
+        if self.compare_velocity(arbiter.contact_point_set.normal, normal):
+            self.still = self.compare_velocity(arbiter.shapes[0].body.velocity,
+                                               arbiter.shapes[1].body.velocity)
+            self.touching_ground = True
         return True
 
     @staticmethod
