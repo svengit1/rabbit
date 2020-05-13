@@ -2,6 +2,7 @@ import pyglet
 import pyglet.gl as gl
 
 from collectables.collectable import Collectable
+from map_objects.spring import Spring
 from collectables.fruit import Fruit
 from collectables.level_end import LevelEnd
 from level.base_level import BaseLevel
