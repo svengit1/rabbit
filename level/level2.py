@@ -7,6 +7,7 @@ from map_objects.large_tree import LargeTree
 from map_objects.moving_platform import MovingPlatform
 from map_objects.platform import Platform
 from map_objects.small_tree import SmallTree
+from map_objects.spring import Spring
 
 
 class Level2(BaseLevel):
@@ -19,6 +20,7 @@ class Level2(BaseLevel):
             Platform(space=space, hpos=16, vpos=15, width=8),
             Platform(space=space, hpos=25, vpos=17, width=6),
             Platform(space=space, hpos=32, vpos=15, width=10),
+            Spring(space=space, hpos=14, vpos=9),
             LargeTree(hpos=27, vpos=18), Bush(hpos=4, vpos=16),
             Cloud(hpos=20, vpos=23), Cloud(hpos=8, vpos=21),
             SmallTree(hpos=5, vpos=16),

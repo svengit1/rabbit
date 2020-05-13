@@ -18,13 +18,13 @@ class Spring(MapEntity):
         self.__init_physics()
 
     def __init_physics(self):
-        vs = [(0, 0), (0, self.width),
-              (self.width, segment_height),
-              (segment_height, -segment_width)]
+        vs = [(0, -segment_width), (0, 0),
+              (segment_width * 3, segment_width - 16),
+              (segment_height * 3, -(segment_width + 16))]
         self.body = pymunk.Body(mass=0, moment=0, body_type=Body.KINEMATIC)
         self.shape = pymunk.Poly(self.body, vs)
         self.shape.friction = 4.0
-        self.shape.elasticity = 0
+        self.shape.elasticity = 1.2
         self.shape.collision_type = 3
         self.body.angle = 0.5 * math.pi
         self.space.add(self.body, self.shape)
