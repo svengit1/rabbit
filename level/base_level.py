@@ -1,12 +1,6 @@
 import pyglet
-import pyglet.gl as gl
-import pymunk
-from pygame.sprite import Sprite
-from pyglet.window import FPSDisplay
-from pymunk import Vec2d
 
 from collectables.collectable import Collectable
-from collectables.fruit import Fruit
 
 
 class BaseLevel:
