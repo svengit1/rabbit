@@ -10,4 +10,5 @@ class LevelEnd(Collectable):
         super().__init__(image, 50, **kwargs)
         self.shape.collision_type = 10
         self.shape.sprite = self
-        self.shape.friction = 4
+        self.shape.friction = 1
+

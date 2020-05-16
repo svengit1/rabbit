@@ -4,16 +4,10 @@ import pymunk
 from pyglet.window import FPSDisplay
 from pymunk import Vec2d
 
-from collectables.fruit import Fruit
 from level.level1 import Level1
 from level.level2 import Level2
-from map_objects.bridge import Bridge
-from map_objects.bush import Bush
-from map_objects.cloud import Cloud
-from map_objects.large_tree import LargeTree
-from map_objects.moving_platform import MovingPlatform
-from map_objects.platform import Platform
-from map_objects.small_tree import SmallTree
+from level.level3 import Level3
+
 from player.rabbit import Rabbit
 from resources import state, window_height, window_width
 
@@ -47,7 +41,7 @@ class Game:
                                              color=(255, 255, 255, 255))
 
         self.fps_display = FPSDisplay(window)
-        self.levels = [Level1(), Level2()]
+        self.levels = [Level3(), Level1(), Level2()]
         self.on_new_level()
 
     def on_new_level(self):
