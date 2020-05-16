@@ -1,5 +1,7 @@
 from transitions import Machine, MachineError
 
+from player.player_animation import PlayerAnimation
+
 
 class PlayerFSM():
     states = ['rl', 'rr', 'sl', 'sr', 'jl', 'jr', 'fl', 'fr']
@@ -33,27 +35,51 @@ class PlayerFSM():
         self.machine.add_transition('stop', 'jl', 'fl')
         self.machine.add_transition('stop', 'fr', 'sr')
         self.machine.add_transition('stop', 'fl', 'sl')
+        self.machine.add_transition('punch', 'sl', 'pl')
+        self.machine.add_transition('punch', 'sr', 'pr')
 
     def on_enter_rr(self):
-        self.image = self.rabbit_run_right
+        self.image = self.pa.get_animation(PlayerAnimation.RUN_RIGHT,
+                                           duration=0.08,
+                                           loop=True)
 
     def on_enter_rl(self):
-        self.image = self.rabbit_run_left
+        self.image = self.pa.get_animation(PlayerAnimation.RUN_LEFT,
+                                           duration=0.08,
+                                           loop=True)
 
     def on_enter_sr(self):
-        self.image = self.rabbit_still_right
+        self.image = self.pa.get_animation(PlayerAnimation.STAND_RIGHT,
+                                           duration=0.3,
+                                           loop=True)
 
     def on_enter_sl(self):
-        self.image = self.rabbit_still_left
+        self.image = self.pa.get_animation(PlayerAnimation.STAND_LEFT,
+                                           duration=0.3,
+                                           loop=True)
 
     def on_enter_fl(self):
-        self.image = self.fall_left
+        self.image = self.pa.get_animation(PlayerAnimation.FALL_LEFT)
 
     def on_enter_fr(self):
-        self.image = self.fall_right
+        self.image = self.pa.get_animation(PlayerAnimation.FALL_RIGHT)
 
     def on_enter_jl(self):
-        self.image = self.jump_left
+        self.image = self.pa.get_animation(PlayerAnimation.JUMP_LEFT,
+                                           duration=0.1,
+                                           loop=False)
 
     def on_enter_jr(self):
-        self.image = self.jump_right
+        self.image = self.pa.get_animation(PlayerAnimation.JUMP_RIGHT,
+                                           duration=0.1,
+                                           loop=False)
+
+    def on_enter_pr(self):
+        self.image = self.pa.get_animation(PlayerAnimation.PUNCH_RIGHT,
+                                           duration=0.1,
+                                           loop=False)
+
+    def on_enter_pl(self):
+        self.image = self.pa.get_animation(PlayerAnimation.PUNCH_RIGHT,
+                                           duration=0.1,
+                                           loop=False)

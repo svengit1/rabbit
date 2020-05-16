@@ -40,4 +40,6 @@ map_images = pyglet.image.ImageGrid(map_segments_image, 19, 12)
 
 rabbit_image_segments = pyglet.resource.image('player.png')
 
+player_image = pyglet.resource.image('qb7e6.png')
+
 rabbit_images = pyglet.image.ImageGrid(rabbit_image_segments, 64, 1)

@@ -8,6 +8,7 @@ from pymunk import Vec2d
 from transitions import Machine, MachineError
 
 from player._rabbit import PlayerFSM
+from player.player_animation import PlayerAnimation
 from resources import last_level, rabbit_images, state
 
 
@@ -32,19 +33,8 @@ class Rabbit(pyglet.sprite.Sprite, PlayerFSM):
         self.on_slope = False
 
     def __init_graphics(self):
-        rabbit_imgs_left, rabbit_imgs_right = Rabbit.make_sprite_image()
-        self.jump_right = rabbit_imgs_right[1]
-        self.fall_right = rabbit_imgs_right[0]
-        self.jump_left = rabbit_imgs_left[1]
-        self.fall_left = rabbit_imgs_left[0]
-        self.rabbit_run_right = pyglet.image.Animation.from_image_sequence(
-            rabbit_imgs_right[8:12], 0.08)
-        self.rabbit_run_right_beginning = rabbit_imgs_right[8]
-        self.rabbit_run_left = pyglet.image.Animation.from_image_sequence(
-            rabbit_imgs_left[8:12], 0.08)
-        self.rabbit_still_right = rabbit_imgs_right[7]
-        self.rabbit_still_left = rabbit_imgs_left[7]
-        self.image = self.rabbit_still_right
+        self.pa = PlayerAnimation()
+        self.image = self.pa.get_animation(PlayerAnimation.STAND_RIGHT)
 
     def __init_physics(self):
         self.speed_limit_y = 200
@@ -114,20 +104,6 @@ class Rabbit(pyglet.sprite.Sprite, PlayerFSM):
                                                arbiter.shapes[1].body.velocity)
             self.touching_ground = True
         return True
-
-    @staticmethod
-    def make_sprite_image():
-        rabbit_imgs_right = []
-        rabbit_imgs_left = []
-        for i in range(16, len(rabbit_images) - 3, 3):
-            image = pyglet.image.Texture.create(128, 96)
-            for j in range(3):
-                image.blit_into(rabbit_images[i + j].get_image_data(), 0,
-                                32 * j, 0)
-            image.anchor_x = 64
-            rabbit_imgs_right.append(image)
-            rabbit_imgs_left.append(image.get_transform(flip_x=True))
-        return rabbit_imgs_left, rabbit_imgs_right
 
     def pan_screen_to_origin(self):
         if self.x > 430:
