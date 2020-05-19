@@ -25,7 +25,7 @@ class Level2(BaseLevel):
             Cloud(hpos=20, vpos=23), Cloud(hpos=8, vpos=21),
             SmallTree(hpos=5, vpos=16),
             Fruit(space=space,
-                  type=Fruit.GRAPE,
+                  type=Fruit.GREEN_GRAPE,
                   points=10,
                   hpos=9,
                   vpos=19,
@@ -53,5 +53,5 @@ class Level2(BaseLevel):
         self.store(self.moving_platform3)
 
     def update(self, dt):
-        self.moving_platform3.update(dt)
+
         super().update(dt)

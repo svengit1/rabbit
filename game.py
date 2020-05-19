@@ -6,7 +6,6 @@ from pymunk import Vec2d
 
 from level.level1 import Level1
 from level.level2 import Level2
-from level.level3 import Level3
 
 from player.rabbit import Rabbit
 from resources import state, window_height, window_width
@@ -41,7 +40,7 @@ class Game:
                                              color=(255, 255, 255, 255))
 
         self.fps_display = FPSDisplay(window)
-        self.levels = [Level3(), Level1(), Level2()]
+        self.levels = [Level1(), Level2()]
         self.on_new_level()
 
     def on_new_level(self):
