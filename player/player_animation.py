@@ -42,20 +42,25 @@ class PlayerAnimation:
             self.carve_img(self.ImgRegion(x=136, y=18, width=width, height=84))
         ]
         self.flip(PlayerAnimation.FLY_LEFT, PlayerAnimation.FLY_RIGHT)
-        width = 54
         self.imgs[PlayerAnimation.KICK_RIGHT] = [
-            self.carve_img(
-                self.ImgRegion(x=i * 63, y=196, width=width, height=78))
-            for i in range(3)
+            self.carve_img(self.ImgRegion(x=10, y=198, width=50, height=76),
+                           62),
+            self.carve_img(self.ImgRegion(x=70, y=198, width=50, height=76)),
+            self.carve_img(self.ImgRegion(x=125, y=198, width=60, height=76)),
+            self.carve_img(self.ImgRegion(x=70, y=198, width=50, height=76)),
+            self.carve_img(self.ImgRegion(x=10, y=198, width=50, height=76)),
         ]
+
         self.flip(PlayerAnimation.KICK_LEFT, PlayerAnimation.KICK_RIGHT)
-        width = 54
         self.imgs[PlayerAnimation.POWER_KICK_RIGHT] = [
             self.carve_img(self.ImgRegion(x=0, y=276, width=54, height=78),
                            60),
             self.carve_img(self.ImgRegion(x=63, y=276, width=54, height=78)),
             self.carve_img(self.ImgRegion(x=125, y=274, width=62, height=78)),
-            self.carve_img(self.ImgRegion(x=204, y=274, width=62, height=78))
+            self.carve_img(self.ImgRegion(x=204, y=274, width=62, height=78)),
+            self.carve_img(self.ImgRegion(x=125, y=274, width=62, height=78)),
+            self.carve_img(self.ImgRegion(x=63, y=276, width=54, height=78)),
+            self.carve_img(self.ImgRegion(x=0, y=276, width=54, height=78))
         ]
 
         self.flip(PlayerAnimation.POWER_KICK_LEFT,
@@ -70,30 +75,28 @@ class PlayerAnimation:
             self.carve_img(self.ImgRegion(x=151, y=578, width=45, height=78),
                            63),
             self.carve_img(self.ImgRegion(x=195, y=578, width=63, height=78),
-                           63)
+                           63),
+            self.carve_img(self.ImgRegion(x=151, y=578, width=45, height=78),
+                           63),
+            self.carve_img(self.ImgRegion(x=5, y=578, width=45, height=78), 63)
         ]
         self.flip(PlayerAnimation.PUNCH_LEFT, PlayerAnimation.PUNCH_RIGHT)
-        width = 68
         self.imgs[PlayerAnimation.RUN_RIGHT] = [
-            self.carve_img(
-                self.ImgRegion(x=i * width, y=929, width=width, height=63))
-            for i in range(3)
+            self.carve_img(self.ImgRegion(x=i * 68, y=929, width=68,
+                                          height=63)) for i in range(3)
         ]
         self.flip(PlayerAnimation.RUN_LEFT, PlayerAnimation.RUN_RIGHT)
-        y = 752
         self.imgs[PlayerAnimation.ROLL_RIGHT] = [
-            self.carve_img(self.ImgRegion(x=16, y=y, width=45, height=78)),
-            self.carve_img(self.ImgRegion(x=66, y=y, width=45, height=78)),
-            self.carve_img(self.ImgRegion(x=111, y=y, width=40, height=78)),
-            self.carve_img(self.ImgRegion(x=151, y=y, width=35, height=78)),
-            self.carve_img(self.ImgRegion(x=186, y=y, width=32, height=78)),
-            self.carve_img(self.ImgRegion(x=218, y=y, width=32, height=78)),
-            self.carve_img(self.ImgRegion(x=252, y=y, width=32, height=78)),
-            self.carve_img(self.ImgRegion(x=284, y=y, width=32, height=78)),
-            self.carve_img(self.ImgRegion(x=151, y=y, width=35, height=78)),
-            self.carve_img(self.ImgRegion(x=111, y=y, width=40, height=78)),
-            self.carve_img(self.ImgRegion(x=66, y=y, width=45, height=78)),
-            self.carve_img(self.ImgRegion(x=16, y=y, width=45, height=78))
+            self.carve_img(self.ImgRegion(x=66, y=752, width=45, height=78)),
+            self.carve_img(self.ImgRegion(x=111, y=752, width=40, height=78)),
+            self.carve_img(self.ImgRegion(x=151, y=752, width=35, height=78)),
+            self.carve_img(self.ImgRegion(x=186, y=752, width=32, height=78)),
+            self.carve_img(self.ImgRegion(x=218, y=752, width=32, height=78)),
+            self.carve_img(self.ImgRegion(x=252, y=752, width=32, height=78)),
+            self.carve_img(self.ImgRegion(x=284, y=752, width=32, height=78)),
+            self.carve_img(self.ImgRegion(x=151, y=752, width=35, height=78)),
+            self.carve_img(self.ImgRegion(x=111, y=752, width=40, height=78)),
+            self.carve_img(self.ImgRegion(x=66, y=752, width=45, height=78)),
         ]
         self.flip(PlayerAnimation.ROLL_LEFT, PlayerAnimation.ROLL_RIGHT)
 
@@ -110,7 +113,6 @@ class PlayerAnimation:
             self.carve_img(self.ImgRegion(x=260, y=108, width=45, height=84)),
             self.carve_img(self.ImgRegion(x=305, y=108, width=45, height=84))
         ]
-
         self.flip(PlayerAnimation.JUMP_LEFT, PlayerAnimation.JUMP_RIGHT)
 
         self.imgs[PlayerAnimation.FALL_RIGHT] = [
@@ -132,6 +134,7 @@ class PlayerAnimation:
                                     img_region.width,
                                     img_region.height).get_image_data(), 0, 0,
             0)
+        image.anchor_x = 25
         return image
 
     def get_animation(self, animation_type, **kwargs):
