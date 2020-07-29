@@ -10,30 +10,25 @@ def center_image(image):
 segment_width = 32
 segment_height = 32
 
-window_width = 960
-window_height = 832
+window_width = 1280
+window_height = int(window_width / 1.749)
 
 state = dict()
 state = {'screen_pan_x': 0, 'score': 0, 'lives': 3, 'level': 0}
 last_level = 1
 
 # Tell pyglet where to find the resources
-pyglet.resource.path = ['./images', './images/map_art', './images/player']
+pyglet.resource.path = [
+    './images', './images/map_art', './images/player',
+    './images/graveyard/png', './images/enemies/male',
+    './images/enemies/female'
+]
 pyglet.resource.reindex()
 
 # Load the three main resources and get them to draw centered
-tile_ground_left = pyglet.resource.image("tile-ground-left.png")
-
-tile_ground = pyglet.resource.image("tile-ground.png")
-
-tile_ground_right = pyglet.resource.image("tile-ground-right.png")
-
-stone_platform_left = pyglet.resource.image("stone-platform-left.png")
-
-stone_platform_middle = pyglet.resource.image("stone-platform-middle.png")
-
-stone_platform_right = pyglet.resource.image("stone-platform-right.png")
-
+background_image = pyglet.resource.image("bg.png")
+background_image.width = window_width
+background_image.height = window_height
 map_segments_image = pyglet.resource.image("tiles.png")
 
 map_images = pyglet.image.ImageGrid(map_segments_image, 19, 12)

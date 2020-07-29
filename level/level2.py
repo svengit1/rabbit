@@ -11,19 +11,18 @@ from map_objects.spring import Spring
 
 
 class Level2(BaseLevel):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, game):
+        super().__init__(game)
 
     def create(self, space, background):
-        self.store(
+        self.add_to_scenery(
             Platform(space=space, hpos=0, vpos=15, width=10),
             Platform(space=space, hpos=16, vpos=15, width=8),
             Platform(space=space, hpos=25, vpos=17, width=6),
             Platform(space=space, hpos=32, vpos=15, width=10),
-            Spring(space=space, hpos=14, vpos=9),
-            LargeTree(hpos=27, vpos=18), Bush(hpos=4, vpos=16),
-            Cloud(hpos=20, vpos=23), Cloud(hpos=8, vpos=21),
-            SmallTree(hpos=5, vpos=16),
+            Spring(space=space, hpos=14, vpos=9), LargeTree(hpos=27, vpos=18),
+            Bush(hpos=4, vpos=16), Cloud(hpos=20, vpos=23),
+            Cloud(hpos=8, vpos=21), SmallTree(hpos=5, vpos=16),
             Fruit(space=space,
                   type=Fruit.GRAPE,
                   points=10,
@@ -41,17 +40,13 @@ class Level2(BaseLevel):
                   points=30,
                   hpos=15,
                   vpos=19,
-                  group=background), LevelEnd(space=space, hpos=50, vpos=17))
-
-        self.moving_platform3 = MovingPlatform(space=space,
-                                               width=20,
-                                               initial_position=(35, 10),
-                                               velocity=(150, 19),
-                                               path_length=500,
-                                               group=background)
-
-        self.store(self.moving_platform3)
+                  group=background), LevelEnd(space=space, hpos=50, vpos=17),
+            MovingPlatform(space=space,
+                           width=20,
+                           initial_position=(35, 10),
+                           velocity=(150, 19),
+                           path_length=500,
+                           group=background))
 
     def update(self, dt):
-        self.moving_platform3.update(dt)
         super().update(dt)

@@ -3,53 +3,54 @@ import pyglet.gl as gl
 import pymunk
 from pyglet.window import FPSDisplay
 from pymunk import Vec2d
+from pymunk.pyglet_util import DrawOptions
 
 from level.level1 import Level1
 from level.level2 import Level2
-from level.level3 import Level3
-
-from player.rabbit import Rabbit
-from resources import state, window_height, window_width
+from player.player import Player
+from resources import background_image, state, window_height, window_width
 
 
 class Game:
-    def __init__(self, window):
+    def __init__(self, window, debug=False):
         self.window = window
         self.background_colour = pyglet.image.SolidColorImagePattern((143, 187, 247, 255)).\
             create_image(window_width, window_height)
 
         self.world_batch = pyglet.graphics.Batch()
         self.background = pyglet.graphics.OrderedGroup(0)
-
+        label_y_position = window_height - 35
         self.score_label = pyglet.text.Label(text="Score: 0",
                                              x=10,
-                                             y=800,
+                                             y=label_y_position,
                                              font_size=24,
                                              bold=True,
                                              color=(255, 255, 255, 255))
         self.lives_label = pyglet.text.Label(text="Lives: 0",
                                              x=200,
-                                             y=800,
+                                             y=label_y_position,
                                              font_size=24,
                                              bold=True,
                                              color=(255, 255, 255, 255))
         self.level_label = pyglet.text.Label(text="Level: 0",
                                              x=340,
-                                             y=800,
+                                             y=label_y_position,
                                              font_size=24,
                                              bold=True,
                                              color=(255, 255, 255, 255))
 
         self.fps_display = FPSDisplay(window)
-        self.levels = [Level3(), Level1(), Level2()]
+        self.levels = [Level1(self), Level2(self)]
         self.on_new_level()
+        self.draw_options = DrawOptions()
+        self.debug = debug
 
     def on_new_level(self):
         # Physics stuff
         self.space = pymunk.Space()
         self.space.gravity = Vec2d(0.0, -1200.0)
 
-        self.player = Rabbit(x=100,
+        self.player = Player(x=100,
                              y=600,
                              group=self.background,
                              space=self.space,
@@ -79,19 +80,24 @@ class Game:
         self.level_label.text = "Level: " + str(state['level'])
 
     def update(self, dt):
+        dt = 1 / 60.
         self.space.step(dt)
         self.player.update(dt)
         self.current_level().update(dt)
         self.update_labels()
 
     def draw(self):
-        self.background_colour.blit(state['screen_pan_x'], 0)
-        self.current_level().draw()
-        self.player.draw()
-        #draw_debug_box(rabbit)
-        #draw_debug_box(carrot)
-        #draw_debug_box(moving_platform)
-        #draw_debug_box(p10)
+        self.window.clear()
+        background_image.blit(state['screen_pan_x'], 0)
+        #        self.background_colour.blit(state['screen_pan_x'], 0)
+        if not self.debug:
+            self.current_level().draw()
+            self.player.draw()
+        else:
+            self.current_level().draw()
+            self.player.draw()
+            self.space.debug_draw(self.draw_options)
+        #draw_debug_box(self.player.shape, self.player.body)
         self.fps_display.draw()
 
         self.sticky_draw(self.score_label, self.window)
