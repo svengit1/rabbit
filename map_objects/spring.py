@@ -38,15 +38,3 @@ class Spring(MapEntity):
         image = Spring.add_image(image, 145, 0, 32)
         image = Spring.add_image(image, 157, 0, 64)
         return image
-
-        # image = Spring.add_image(image, 217, offset, 0)
-        # offset += segment_width
-        # image = Spring.add_image(image, 218, offset, 0)
-        # offset += segment_width
-        # for j in range(width - 4):
-        #     image = Platform.add_image(image, 225, offset, 0)
-        #     offset += segment_width
-        # image = Platform.add_image(image, 223, offset, 0)
-        # offset += segment_width
-        # image = Platform.add_image(image, 224, offset, 0)
-        # return image

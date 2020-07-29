@@ -1,8 +1,8 @@
+import math
+
 import pyglet
 import pymunk
 from pymunk.body import Body
-import math
-
 
 import resources
 from map_objects.map_entity import MapEntity
@@ -19,15 +19,14 @@ class Bridge(MapEntity):
         self.__init_physics()
 
     def __init_physics(self):
-        vs = [(-segment_height, -segment_width), (-segment_height, -(self.width - 1) * segment_width),
-              (0, -(self.width - 1) * segment_width),
-              (0, -segment_width)]
+        vs = [(0, 0), (0, segment_height),
+              ((self.width - 1) * segment_width, 0),
+              ((self.width - 1) * segment_width, segment_height)]
         self.body = pymunk.Body(mass=0, moment=0, body_type=Body.KINEMATIC)
         self.shape = pymunk.Poly(self.body, vs)
         self.shape.friction = 4.0
         self.shape.elasticity = 0
         self.shape.collision_type = 3
-        self.body.angle = 0.5 * math.pi
         self.space.add(self.body, self.shape)
         self.body.position = self.x, self.y
 
@@ -45,7 +44,5 @@ class Bridge(MapEntity):
                                          flat_part_seg[1], flat_part_seg[2])
         offset += (width - 2) * segment_width
         image = Bridge.add_image(image, 128, offset, 32)
-
-        image.anchor_y = 32
 
         return image
