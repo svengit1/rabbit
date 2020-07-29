@@ -15,9 +15,9 @@ class Collectable(Sprite):
         kwargs.pop('vpos')
         kwargs.pop('space')
         super().__init__(img=image, x=x, y=y, **kwargs)
-        self.__init_physics(mass)
+        self.__init_physics__(mass)
 
-    def __init_physics(self, mass=0):
+    def __init_physics__(self, mass=0):
         body_type = pymunk.Body.KINEMATIC
         if mass:
             body_type = pymunk.Body.DYNAMIC

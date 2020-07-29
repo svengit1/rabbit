@@ -1,7 +1,10 @@
+import itertools
+
 import pyglet
-from map_objects.platform import Platform
+
 from collectables.collectable import Collectable
 from map_objects.map_entity import MapEntity
+from map_objects.platform import Platform
 
 
 def draw_debug_box(shape, body):
@@ -14,22 +17,22 @@ def draw_debug_box(shape, body):
 
 
 class BaseLevel:
-    def __init__(self):
+    def __init__(self, game):
         self.scenery = []
+        self.game = game
 
-    def store(self, *map_objects):
+    @staticmethod
+    def __filter_has_update__(level_elements):
+        return filter(lambda x: callable(getattr(x, "update", None)),
+                      level_elements)
+
+    def add_to_scenery(self, *map_objects):
         self.scenery.extend(map_objects)
-
-    def solved(self):
-        raise NotImplementedError
 
     def draw(self):
         for s in self.scenery:
             s.draw()
-            if isinstance(s, Platform):
-                draw_debug_box(s.shape, s.body)
 
     def update(self, dt):
-        for x in list(
-                filter(lambda j: isinstance(j, Collectable), self.scenery)):
+        for x in list(self.__filter_has_update__(self.scenery)):
             x.update(dt)

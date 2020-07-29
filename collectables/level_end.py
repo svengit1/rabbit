@@ -11,4 +11,3 @@ class LevelEnd(Collectable):
         self.shape.collision_type = 10
         self.shape.sprite = self
         self.shape.friction = 1
-

@@ -15,6 +15,9 @@ class MovingPlatform(pyglet.sprite.Sprite):
         self.velocity = kwargs['velocity']
         self.initial_position = tuple(
             [i * segment_width for i in kwargs['initial_position']])
+        self.hpos = kwargs['initial_position'][0]
+        self.vpos = kwargs['initial_position'][1]
+
         self.path_length = kwargs['path_length']
         kwargs.pop('space')
         kwargs.pop('width')
@@ -29,15 +32,14 @@ class MovingPlatform(pyglet.sprite.Sprite):
         self.__init_physics()
 
     def __init_physics(self):
-        vs = [(0, -segment_width),
-              (0, -(self.platform_width - 1) * segment_width),
-              (segment_height, -(self.platform_width - 1) * segment_width),
-              (segment_height, -segment_width)]
+        vs = [(segment_width, 0),
+              ((self.platform_width - 1) * segment_width, 0),
+              ((self.platform_width - 1) * segment_width, segment_height),
+              (segment_width, segment_height)]
         self.body = pymunk.Body(mass=0, moment=0, body_type=Body.KINEMATIC)
         self.shape = pymunk.Poly(self.body, vs)
-        self.shape.friction = 4.0
+        self.shape.friction = 9.0
         self.shape.collision_type = 3
-        self.body.angle = 0.5 * math.pi
         self.space.add(self.body, self.shape)
         self.body.position = self.initial_position
         self.body.velocity = self.velocity
@@ -48,10 +50,10 @@ class MovingPlatform(pyglet.sprite.Sprite):
         p = math.sqrt((self.initial_position[0] - self.x)**2 +
                       (self.initial_position[1] - self.y)**2)
         if math.isclose(p, self.path_length,
-                        abs_tol=0.9) and self.body.velocity == self.velocity:
+                        abs_tol=1.5) and self.body.velocity == self.velocity:
             # reverse velocity
             self.body.velocity = tuple([i * -1 for i in self.body.velocity])
         if math.isclose(p, 0,
-                        abs_tol=0.9) and self.body.velocity != self.velocity:
+                        abs_tol=1.5) and self.body.velocity != self.velocity:
             # reverse velocity
             self.body.velocity = tuple([i * -1 for i in self.body.velocity])
