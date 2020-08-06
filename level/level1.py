@@ -3,7 +3,6 @@ import pyglet.gl as gl
 
 from collectables.collectable import Collectable
 from collectables.fruit import Fruit
-from map_objects.sea import Sea
 from collectables.level_end import LevelEnd
 from enemy.enemy import Enemy
 from level.base_level import BaseLevel
@@ -13,6 +12,7 @@ from map_objects.cloud import Cloud
 from map_objects.large_tree import LargeTree
 from map_objects.moving_platform import MovingPlatform
 from map_objects.platform import Platform
+from map_objects.sea import Sea
 from map_objects.small_tree import SmallTree
 from map_objects.spring import Spring
 
@@ -62,7 +62,6 @@ class Level1(BaseLevel):
                   hpos=13,
                   vpos=19,
                   group=background),
-
             Fruit(space=space,
                   type=Fruit.GREEN_GRAPE,
                   points=10,
@@ -80,7 +79,7 @@ class Level1(BaseLevel):
                   points=30,
                   hpos=16,
                   vpos=19,
-                  group=background), LevelEnd(space=space, hpos=50, vpos=17),
+                  group=background), LevelEnd(space=space, hpos=5, vpos=17),
             MovingPlatform(space=space,
                            width=20,
                            initial_position=(10, 5),

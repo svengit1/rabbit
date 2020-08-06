@@ -3,14 +3,16 @@ import math
 import pymunk
 from pyglet.sprite import Sprite
 from pymunk import Vec2d
+from transitions import Machine, MachineError
 
 from enemy.enemy_animation import EnemyAnimation
+from enemy.enemy_fsm import EnemyFSM
 from map_objects.moving_platform import MovingPlatform
 from map_objects.platform import Platform
 from resources import segment_height, segment_width
 
 
-class Enemy(Sprite):
+class Enemy(Sprite, EnemyFSM):
     max_relative_velocity = 100
 
     def __init__(self, space, **kwargs):
@@ -25,6 +27,9 @@ class Enemy(Sprite):
             EnemyAnimation.WALK_RIGHT, duration=0.1, loop=True),
                                     **kwargs)
         self.space = space
+        self.machine = Machine(self, states=Enemy.states, initial='wr')
+        self.fsm()
+
         self.__init_physiscs__()
 
     def __init_physiscs__(self):
@@ -114,6 +119,19 @@ class Enemy(Sprite):
         l = body.velocity.x
         if abs(body.velocity.x) > abs(body.current_max_velocity):
             body.velocity = (body.current_max_velocity, body.velocity.y)
+
+    def __update_state__(self, dt):
+        try:
+            if self.body.touching_ground and self.body.still and self.state not in self.static_action:
+                self.stop()
+            elif self.body.velocity.x > 0:
+                self.walk_right()
+            elif self.body.velocity.x < 0:
+                self.walk_left()
+        except MachineError as msg:
+            # State not allowed
+            #print(msg)
+            pass
 
     def update(self, dt):
         self.x = self.body.position.x
