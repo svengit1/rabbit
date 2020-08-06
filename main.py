@@ -25,6 +25,7 @@ def main():
         opts = [o for o, v in arguments]
 
         window = pyglet.window.Window(window_width, window_height)
+        window.config.alpha_size = 8
 
         if '-d' in opts or '--debug' in opts:
             game = Game(window, True)

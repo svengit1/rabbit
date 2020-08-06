@@ -4,6 +4,7 @@ from map_objects.map_entity import MapEntity
 from resources import segment_height, segment_width
 import random
 
+
 class Sea(MapEntity):
     def __init__(self, **kwargs):
         self.width = kwargs['width']
@@ -16,7 +17,7 @@ class Sea(MapEntity):
     def create_image(width, depth):
         u = [74 for i in range(1, 100)]
         for i in range(10):
-            u[random.randint(0, 99)] = 73
+            u[random.randint(0, 98)] = 73
         image = pyglet.image.Texture.create(width * segment_width, depth * segment_height)
         for w in range(width):
             image = Sea.add_image(image, 85, w * segment_width, (depth - 1) * segment_height)

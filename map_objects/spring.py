@@ -24,7 +24,7 @@ class Spring(MapEntity):
         self.body = pymunk.Body(mass=0, moment=0, body_type=Body.KINEMATIC)
         self.shape = pymunk.Poly(self.body, vs)
         self.shape.friction = 4.0
-        self.shape.elasticity = 1.2
+        self.shape.elasticity = 0.9
         self.shape.collision_type = 3
         self.body.angle = 0.5 * math.pi
         self.space.add(self.body, self.shape)

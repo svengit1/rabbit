@@ -20,8 +20,8 @@ last_level = 1
 # Tell pyglet where to find the resources
 pyglet.resource.path = [
     './images', './images/map_art', './images/player',
-    './images/graveyard/png', './images/enemies/male',
-    './images/enemies/female'
+    './images/graveyard/png/tiles', './images/graveyard/png/objects',
+    './images/enemies/male', './images/enemies/female', './images/graveyard/png'
 ]
 pyglet.resource.reindex()
 

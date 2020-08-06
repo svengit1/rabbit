@@ -32,10 +32,10 @@ class MovingPlatform(pyglet.sprite.Sprite):
         self.__init_physics()
 
     def __init_physics(self):
-        vs = [(segment_width, 0),
-              ((self.platform_width - 1) * segment_width, 0),
-              ((self.platform_width - 1) * segment_width, segment_height),
-              (segment_width, segment_height)]
+        vs = [(segment_width - 32, 0),
+              (self.platform_width * segment_width, 0),
+              (self.platform_width * segment_width, segment_height),
+              (segment_width-32, segment_height)]
         self.body = pymunk.Body(mass=0, moment=0, body_type=Body.KINEMATIC)
         self.shape = pymunk.Poly(self.body, vs)
         self.shape.friction = 9.0

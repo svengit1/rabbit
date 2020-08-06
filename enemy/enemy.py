@@ -17,10 +17,8 @@ class Enemy(Sprite, EnemyFSM):
 
     def __init__(self, space, **kwargs):
         self.initial_positition = kwargs['initial_position']
-        self.platform = kwargs['platform']
         self.level = kwargs['level']
         kwargs.pop('initial_position')
-        kwargs.pop('platform')
         kwargs.pop('level')
         self.ea = EnemyAnimation.instance(20)
         super(Enemy, self).__init__(img=self.ea.get_animation(
@@ -43,9 +41,7 @@ class Enemy(Sprite, EnemyFSM):
         self.shape.friction = 0
         self.shape.collision_type = 20
         self.shape.elasticity = 0
-        self.body.position = (segment_width *
-                              (self.platform.hpos + self.initial_positition),
-                              (self.platform.vpos + 1) * segment_height)
+        self.body.position = (segment_width * self.initial_positition[0],  self.initial_positition[0] * segment_height)
         self.body.center_of_gravity = 20, 0
         self.body.velocity_func = self.limit_velocity
         self.body.min_walk_x, self.body.max_walk_x = 0, 0
@@ -107,8 +103,7 @@ class Enemy(Sprite, EnemyFSM):
         assert isinstance(platform, Platform) or isinstance(
             platform, MovingPlatform)
         e = Enemy(platform.space,
-                  platform=platform,
-                  initial_position=3,
+                  initial_position=(platform.hpos, platform.vpos),
                   group=g,
                   level=level)
         return e
