@@ -212,9 +212,9 @@ class Player(pyglet.sprite.Sprite, PlayerFSM):
         # slow down in jump
         if not self.body.touching_ground:
             if self.body.velocity.x > 0 and self.key_handler[key.LEFT]:
-                self.body.apply_impulse_at_local_point([0, 150], (0, 0))
+                self.body.apply_impulse_at_local_point([0, 300], (0, 0))
             if self.body.velocity.x < 0 and self.key_handler[key.RIGHT]:
-                self.body.apply_impulse_at_local_point([0, -150], (0, 0))
+                self.body.apply_impulse_at_local_point([0, -300], (0, 0))
 
         # right movement
         if not self.key_handler[key.LEFT] and self.key_handler[

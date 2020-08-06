@@ -24,7 +24,7 @@ class Level2(BaseLevel):
             Bush(hpos=4, vpos=16), Cloud(hpos=20, vpos=23),
             Cloud(hpos=8, vpos=21), SmallTree(hpos=5, vpos=16),
             Fruit(space=space,
-                  type=Fruit.GRAPE,
+                  type=Fruit.GREEN_GRAPE,
                   points=10,
                   hpos=9,
                   vpos=19,

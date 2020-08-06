@@ -19,3 +19,9 @@ class SmallTree(MapEntity):
         image = SmallTree.add_images(image, (51, 0, 32), (52, 32, 32),
                                      (39, 0, 0), (40, 32, 0))
         return image
+
+class DeadTree(MapEntity):
+    def __init__(self, **kwargs):
+        self.image = pyglet.resource.image('tree.png')
+        self.x = kwargs['hpos'] * segment_width
+        self.y = kwargs['vpos'] * segment_height

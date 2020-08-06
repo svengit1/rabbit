@@ -42,7 +42,7 @@ class EnemyAnimation:
         assert to_parcentage > 0
         image.width = int(image.width * (to_parcentage / 100))
         image.height = int(image.height * (to_parcentage / 100))
-        image.anchor_x = 0  #image.width // 2
+        image.anchor_x = 1  #image.width // 2
         return image
 
     def flip(self, dest, src):
