@@ -38,7 +38,7 @@ class MovingPlatform(pyglet.sprite.Sprite):
               (segment_width-32, segment_height)]
         self.body = pymunk.Body(mass=0, moment=0, body_type=Body.KINEMATIC)
         self.shape = pymunk.Poly(self.body, vs)
-        self.shape.friction = 9.0
+        self.shape.friction = 4.0
         self.shape.collision_type = 3
         self.space.add(self.body, self.shape)
         self.body.position = self.initial_position

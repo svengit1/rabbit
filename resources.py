@@ -14,7 +14,7 @@ window_width = 1280
 window_height = int(window_width / 1.749)
 
 state = dict()
-state = {'screen_pan_x': 0, 'score': 0, 'lives': 3, 'level': 0}
+state = {'screen_pan_y': 0, 'screen_pan_x': 0, 'score': 0, 'lives': 3, 'level': 0}
 last_level = 1
 
 # Tell pyglet where to find the resources

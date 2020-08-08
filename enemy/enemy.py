@@ -1,6 +1,7 @@
 import math
 
 import pymunk
+from util.util import sign
 from pyglet.sprite import Sprite
 from pymunk import Vec2d
 from transitions import Machine, MachineError
@@ -79,12 +80,6 @@ class Enemy(Sprite, EnemyFSM):
         return True
 
     @staticmethod
-    def sign(x):
-        if x >= 0:
-            return 1
-        return -1
-
-    @staticmethod
     def standing_on_platform(arbiter, space, data):
         enemy_body = arbiter.shapes[0].body
         position_x = arbiter.shapes[1].body.position.x
@@ -93,7 +88,7 @@ class Enemy(Sprite, EnemyFSM):
         enemy_body.min_walk_x = min(arbiter.shapes[1].get_vertices(),
                                     key=lambda k: k.x).x + position_x
         enemy_body.current_max_velocity = arbiter.shapes[
-            1].body.velocity.x + Enemy.sign(
+            1].body.velocity.x + sign(
                 enemy_body.velocity.x) * Enemy.max_relative_velocity
         enemy_body.touching_ground = arbiter.shapes[1].body
         return True

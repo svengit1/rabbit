@@ -75,6 +75,12 @@ class Level1(BaseLevel):
             SceneryDecoration(hpos=5, vpos=7, type=SceneryDecoration.SIGN),
 
         )
+        self.add_to_scenery(*[
+            Enemy.guards(i, background, self) for i in list(
+                filter(
+                    lambda p: isinstance(p, Platform) or isinstance(
+                        p, MovingPlatform), self.scenery))
+        ])
 
 
 # Platform(space=space, hpos=0, vpos=15, width=10), p, b,
