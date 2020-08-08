@@ -81,14 +81,15 @@ class Game:
 
     def update(self, dt):
         dt = 1 / 60.
-        self.space.step(dt)
+        for _ in range(10):
+            self.space.step(dt/10)
         self.player.update(dt)
         self.current_level().update(dt)
         self.update_labels()
 
     def draw(self):
         self.window.clear()
-        background_image.blit(state['screen_pan_x'], 0)
+        background_image.blit(state['screen_pan_x'], state['screen_pan_y'])
         #        self.background_colour.blit(state['screen_pan_x'], 0)
         if not self.debug:
             self.current_level().draw()

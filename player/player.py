@@ -2,6 +2,7 @@ import math
 
 import pyglet
 import pymunk
+from util.util import sign
 from pyglet.gl import glTranslatef
 from pyglet.window import key
 from pymunk import Vec2d
@@ -13,6 +14,8 @@ from resources import last_level, rabbit_images, state
 
 
 class Player(pyglet.sprite.Sprite, PlayerFSM):
+    running_velocity = 500
+
     def __init__(self, *args, **kwargs):
         self.space = kwargs['space']
         self.game = kwargs['game']
@@ -38,22 +41,23 @@ class Player(pyglet.sprite.Sprite, PlayerFSM):
         self.image = self.pa.get_animation(PlayerAnimation.STAND_RIGHT)
 
     def __init_physics__(self):
-        self.jump_force = 20000
-        self.running_velocity = 450
-        vs = [(0, 15), (0, -15), (64, 15), (64, -15)]
+        self.jump_force = 25000
+        self.moving_force = 2000000
+
+        vs = [(-15, 0), (-15, 64), (15, 64), (15, 0)]
         mass = 40
-        moment = pymunk.moment_for_poly(mass, vs)
-        self.body = pymunk.Body(mass, moment)
+        self.body = pymunk.Body(mass, pymunk.inf)
         self.shape = pymunk.Poly(self.body, vs)
-        self.shape.friction = 1.0
+        self.shape.friction = 0.5
         self.shape.collision_type = 1
-        self.shape.elasticity = 0.9
+        self.shape.elasticity = 0
         self.body.position = self.x, self.y
-        self.body.angle = 0.5 * math.pi
         self.body.touching_ground = False
         self.body.still = False
         self.space.add(self.body, self.shape)
-        self.body.center_of_gravity = 10, 0
+        self.body.center_of_gravity = 0, 0
+        self.body.velocity_func = self.limit_velocity
+        self.body.current_max_velocity = self.running_velocity
         # Collison handlers
         self.space.add_collision_handler(
             1, 2).pre_solve = self.collision_with_food
@@ -80,6 +84,13 @@ class Player(pyglet.sprite.Sprite, PlayerFSM):
         return False
 
     @staticmethod
+    def limit_velocity(body, gravity, damping, dt):
+        pymunk.Body.update_velocity(body, gravity, damping, dt)
+        l = body.velocity.x
+        if abs(body.velocity.x) > abs(body.current_max_velocity):
+            body.velocity = (body.current_max_velocity, body.velocity.y)
+
+    @staticmethod
     def compare_velocity(vel_a, vel_b):
         return math.isclose(vel_a.x, vel_b.x, abs_tol=0.1) and math.isclose(
             vel_a.y, vel_b.y, abs_tol=0.1)
@@ -96,6 +107,9 @@ class Player(pyglet.sprite.Sprite, PlayerFSM):
             player_body.still = Player.compare_velocity(
                 arbiter.shapes[0].body.velocity,
                 arbiter.shapes[1].body.velocity)
+            player_body.current_max_velocity = arbiter.shapes[
+            1].body.velocity.x + sign(
+                player_body.velocity.x) * Player.running_velocity
             player_body.touching_ground = arbiter.shapes[1].body
         return True
 
@@ -103,6 +117,11 @@ class Player(pyglet.sprite.Sprite, PlayerFSM):
         if self.x > 430:
             state['screen_pan_x'] += -(self.x - 430)
             glTranslatef(self.x - 430, 0, 0)
+
+        if 430 > self.y:
+            state['screen_pan_y'] += -(self.y - 430)
+            glTranslatef(0, (self.y - 430), 0)
+
 
     def update(self, dt):
         self.__update_screen_pan(dt)
@@ -124,6 +143,10 @@ class Player(pyglet.sprite.Sprite, PlayerFSM):
         if 430 < self.x:
             state['screen_pan_x'] += -(self.x - self.body.position.x)
             glTranslatef((self.x - self.body.position.x), 0, 0)
+
+        if 430 < self.y:
+            state['screen_pan_y'] += -(self.y - self.body.position.y)
+            glTranslatef(0, (self.y - self.body.position.y), 0)
 
         #Died
         if self.y < 10:
@@ -187,8 +210,8 @@ class Player(pyglet.sprite.Sprite, PlayerFSM):
                 key.UP] and self.body.touching_ground and self.state not in [
                     'jr', 'jl', 'fl', 'fr'
                 ]:
-            self.body.apply_impulse_at_local_point([self.jump_force, 0],
-                                                   (0, 0))
+            self.body.apply_impulse_at_local_point([0, self.jump_force],
+                                                   (0, 15))
             self.body.touching_ground = False
 
         # roll
@@ -206,19 +229,23 @@ class Player(pyglet.sprite.Sprite, PlayerFSM):
         # left movement
         if not self.key_handler[key.RIGHT] and self.key_handler[
                 key.LEFT] and self.body.touching_ground or self.state == 'rrl':
-            speed_x, speed_y = -self.running_velocity, self.body.velocity.y
-            self.body.velocity = (speed_x, speed_y)
+            self.body.apply_force_at_local_point((-self.moving_force, 0), (0, 0))
 
-        # slow down in jump
         if not self.body.touching_ground:
+            # slow down in jump
             if self.body.velocity.x > 0 and self.key_handler[key.LEFT]:
-                self.body.apply_impulse_at_local_point([0, 300], (0, 0))
+                self.body.apply_impulse_at_local_point([-350, 0], (0, 0))
             if self.body.velocity.x < 0 and self.key_handler[key.RIGHT]:
-                self.body.apply_impulse_at_local_point([0, -300], (0, 0))
+                self.body.apply_impulse_at_local_point([350, 0], (0, 0))
+            # accelerate in jump
+            if self.body.velocity.x <= 0 and self.key_handler[key.LEFT]:
+                self.body.apply_impulse_at_local_point([-250, 0], (0, 0))
+            if self.body.velocity.x >= 0 and self.key_handler[key.RIGHT]:
+                self.body.apply_impulse_at_local_point([250, 0], (0, 0))
 
         # right movement
         if not self.key_handler[key.LEFT] and self.key_handler[
                 key.
                 RIGHT] and self.body.touching_ground or self.state == 'rrr':
-            speed_x, speed_y = self.running_velocity, self.body.velocity.y
-            self.body.velocity = (speed_x, speed_y)
+            self.body.apply_force_at_local_point((self.moving_force, 0), (0, 0))
+

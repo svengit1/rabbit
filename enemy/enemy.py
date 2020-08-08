@@ -1,16 +1,19 @@
 import math
 
 import pymunk
+from util.util import sign
 from pyglet.sprite import Sprite
 from pymunk import Vec2d
+from transitions import Machine, MachineError
 
 from enemy.enemy_animation import EnemyAnimation
+from enemy.enemy_fsm import EnemyFSM
 from map_objects.moving_platform import MovingPlatform
 from map_objects.platform import Platform
 from resources import segment_height, segment_width
 
 
-class Enemy(Sprite):
+class Enemy(Sprite, EnemyFSM):
     max_relative_velocity = 100
 
     def __init__(self, space, **kwargs):
@@ -23,6 +26,9 @@ class Enemy(Sprite):
             EnemyAnimation.WALK_RIGHT, duration=0.1, loop=True),
                                     **kwargs)
         self.space = space
+        self.machine = Machine(self, states=Enemy.states, initial='wr')
+        self.fsm()
+
         self.__init_physiscs__()
 
     def __init_physiscs__(self):
@@ -74,12 +80,6 @@ class Enemy(Sprite):
         return True
 
     @staticmethod
-    def sign(x):
-        if x >= 0:
-            return 1
-        return -1
-
-    @staticmethod
     def standing_on_platform(arbiter, space, data):
         enemy_body = arbiter.shapes[0].body
         position_x = arbiter.shapes[1].body.position.x
@@ -88,7 +88,7 @@ class Enemy(Sprite):
         enemy_body.min_walk_x = min(arbiter.shapes[1].get_vertices(),
                                     key=lambda k: k.x).x + position_x
         enemy_body.current_max_velocity = arbiter.shapes[
-            1].body.velocity.x + Enemy.sign(
+            1].body.velocity.x + sign(
                 enemy_body.velocity.x) * Enemy.max_relative_velocity
         enemy_body.touching_ground = arbiter.shapes[1].body
         return True
@@ -109,6 +109,19 @@ class Enemy(Sprite):
         l = body.velocity.x
         if abs(body.velocity.x) > abs(body.current_max_velocity):
             body.velocity = (body.current_max_velocity, body.velocity.y)
+
+    def __update_state__(self, dt):
+        try:
+            if self.body.touching_ground and self.body.still and self.state not in self.static_action:
+                self.stop()
+            elif self.body.velocity.x > 0:
+                self.walk_right()
+            elif self.body.velocity.x < 0:
+                self.walk_left()
+        except MachineError as msg:
+            # State not allowed
+            #print(msg)
+            pass
 
     def update(self, dt):
         self.x = self.body.position.x
