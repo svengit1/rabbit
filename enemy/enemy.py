@@ -37,7 +37,7 @@ class Enemy(Sprite, EnemyFSM):
         vs = [(offset, 0), (image_width, 0), (image_width, 64), (offset, 64)]
         mass = 30
         moment = pymunk.moment_for_poly(mass, vs)
-        self.body = pymunk.Body(mass, moment)
+        self.body = pymunk.Body(mass, pymunk.inf)
         self.shape = pymunk.Poly(self.body, vs)
         self.shape.friction = 0
         self.shape.collision_type = 20
