@@ -1,2 +1,2 @@
 # rabbit
-Pyglet based python game
+Pyglet/pymunk based python game
