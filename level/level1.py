@@ -4,6 +4,7 @@ from collectables.collectable import Collectable
 from collectables.fruit import Fruit
 from map_objects.sea import Sea
 from collectables.level_end import LevelEnd
+from map_objects.crate import Crate
 from enemy.enemy import Enemy
 from level.base_level import BaseLevel
 from map_objects.bridge import Bridge
@@ -67,11 +68,11 @@ class Level1(BaseLevel):
                            velocity=(80, 110),
                            path_length=475,
                            group=background),
-            SceneryDecoration(hpos=1, vpos=7, type=SceneryDecoration.CRATE),
-            SceneryDecoration(hpos=2, vpos=7, type=SceneryDecoration.CRATE),
-            SceneryDecoration(hpos=3, vpos=7, type=SceneryDecoration.CRATE),
-            SceneryDecoration(hpos=1, vpos=8, type=SceneryDecoration.CRATE),
-            SceneryDecoration(hpos=2, vpos=8, type=SceneryDecoration.CRATE),
+            Crate(hpos=5, vpos=7, space=space),
+            Crate(hpos=5, vpos=8, space=space),
+            Crate(hpos=5, vpos=9, space=space),
+            Crate(hpos=5, vpos=10, space=space),
+            Crate(hpos=5, vpos=11, space=space),
             SceneryDecoration(hpos=5, vpos=7, type=SceneryDecoration.SIGN),
 
         )

@@ -11,7 +11,6 @@ class SceneryDecoration(MapEntity):
     TOMBSTONE_CROSS = pyglet.resource.image('tombstone-2s.png')
     SIGN = pyglet.resource.image('sign-s.png')
     ARROWSIGN = pyglet.resource.image('arrowsign-s.png')
-    CRATE = pyglet.resource.image('crate-s.png')
     DEAD_TREE = pyglet.resource.image('tree-s.png')
 
     def __init__(self, **kwargs):
