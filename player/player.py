@@ -70,7 +70,7 @@ class Player(pyglet.sprite.Sprite, PlayerFSM):
         self.platform_collision_handler.pre_solve = Player.standing_on_platform
         self.platform_collision_handler.separate = Player.separated_from_platform
 
-    def level_completed(self, aarbiter, space, data):
+    def level_completed(self, arbiter, space, data):
         if state['level'] != last_level:
             state['level'] = state['level'] + 1
             self.game.on_new_level()
@@ -121,7 +121,6 @@ class Player(pyglet.sprite.Sprite, PlayerFSM):
         if 430 > self.y:
             state['screen_pan_y'] += -(self.y - 430)
             glTranslatef(0, (self.y - 430), 0)
-
 
     def update(self, dt):
         self.__update_screen_pan(dt)
@@ -174,7 +173,6 @@ class Player(pyglet.sprite.Sprite, PlayerFSM):
                 self.run_left()
         except MachineError as msg:
             # State not allowed
-            #print(msg)
             pass
 
     def __update_movement__(self, dt):
