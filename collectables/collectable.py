@@ -26,7 +26,6 @@ class Collectable(Sprite):
         self.body = pymunk.Body(mass=mass, moment=moment, body_type=body_type)
         self.shape = pymunk.Poly(self.body, vs)
         self.body.position = self.x, self.y
-        self.body.angle = 0.5 * math.pi
         self.space.add(self.body, self.shape)
 
     def update(self, dt):
